@@ -19,11 +19,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import PostAddIcon from '@mui/icons-material/PostAdd';
+import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems} from './itemsEmployee';
+import { MainListItems, SecondaryListItems} from './itemsEmployee';
 import Tooltip from '@mui/material/Tooltip';
 import AddTask from './addTask';
 import AddTag from './addTag';
+import theme from './theme';
 
 const drawerWidth = 240;
 
@@ -71,11 +73,17 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
+const handleLogout = () => {
+  // Clear the stored token
+  localStorage.removeItem('userData');
+  // Redirect user or update the state to reflect logged out status
+  // For example, using window.location.href or react-router-dom for redirection
+  window.location.href = '/signin'; // Redirect to login after logout
+};
 
 
-const defaultTheme = createTheme();
+export default function DashboardEmployee({  children }) {
 
-export default function DashboardEmployee() {
   const [open_task, setOpenTask] = React.useState(false);
   const [open_drawer, setOpenDrawer] = React.useState(false);
   const [open_tag, setOpenTag] = React.useState(false);
@@ -97,7 +105,7 @@ export default function DashboardEmployee() {
 
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open_drawer}>
@@ -150,6 +158,13 @@ export default function DashboardEmployee() {
               </Badge>
             </IconButton>
             </Tooltip>
+            <Tooltip title="Sign out">
+            <IconButton color="inherit" onClick={handleLogout}>
+              <Badge color="secondary">
+                <LogoutIcon/>
+              </Badge>
+            </IconButton>
+            </Tooltip>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open_drawer}>
@@ -167,9 +182,9 @@ export default function DashboardEmployee() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            {mainListItems}
+            <MainListItems/>
             <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+            <SecondaryListItems/>
           </List>
         </Drawer>
         <Box
@@ -185,42 +200,7 @@ export default function DashboardEmployee() {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  {/* <Chart /> */}
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  {/* <Deposits /> */}
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  {/* <Orders /> */}
-                </Paper>
-              </Grid>
-            </Grid>
-          </Container>
+          {children}
         </Box>
       </Box>
     </ThemeProvider>

@@ -8,6 +8,10 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import config from '../config/config';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert'; 
+import Alert from '@mui/material/Alert';
 
 
 function SignUp() {
@@ -21,15 +25,115 @@ function SignUp() {
         lastName: ''
     });
 
+    // const [isEmployer, setIsEmployer] = useState(false);
+
+    const [errors, setErrors] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirmEmail: '',
+        confirmPassword: ''
+    });
+
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertSeverity, setAlertSeverity] = useState('error'); // Assuming 'error' for failed signup
+
     const handleChange = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });
+        setErrors({ ...errors, [prop]: ''});
+        setShowAlert(false);
+        setOpenSnackbar(false);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-    };
 
-    const [isEmployer, setIsEmployer] = useState(false);
+        try {
+
+            const { username, email, confirmEmail, password, confirmPassword, firstName, lastName } = values;
+          
+            if (email !== confirmEmail || password !== confirmPassword) {
+                setSnackbarMessage('Failed to sign up, please try again.');
+                setOpenSnackbar(true);
+            
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    confirmEmail: email !== confirmEmail ? 'Emails do not match.' : '',
+                    confirmPassword: password !== confirmPassword ? 'Passwords do not match.' : ''
+                }));
+            
+                return; // Prevent further execution if there are errors
+            }
+
+            const apiUrl = config.API_BASE_URL + '/users/'; 
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'first_name': firstName,
+                    'last_name': lastName,
+                    'username': username,
+                    'email': email,
+                    'password': password
+                })
+            });
+    
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log('Signup successful:', data);
+                console.log(data.id)
+                setAlertSeverity ('success');
+                setAlertMessage('Signup successful! Click here to  Sign in.');
+                setShowAlert(true); 
+                
+                // Clear the form
+                setValues({
+                    username: '',
+                    email: '',
+                    confirmEmail: '', 
+                    password: '',
+                    confirmPassword: '',
+                    firstName: '',
+                    lastName: ''
+                });
+
+            } else {
+                // console.log(data['errors'])
+                const responseErrors = data.errors
+                const errorCount = data.error_count;
+                // console.log("errors username content: ")
+                // console.log(errors['username'])
+                // console.log(errors['password'])
+                // console.log(errorCount)
+                if (errorCount !== 1){
+                    const combinedErrors = {};
+                    for (const field in responseErrors) {
+                        combinedErrors[field] = responseErrors[field].map(error => error.message).join(' '); // Join with '. '
+
+                    }
+                    console.log('this is called')
+                    setErrors(combinedErrors)
+                }else{
+                    setErrors(responseErrors)
+                }
+                console.log(errors['password'])
+                setSnackbarMessage('Failed to sign up, please try again.'); // Or use errorData.message
+                setOpenSnackbar(true); 
+        }
+        } catch (error) {
+            console.error('Signup failed:', error);
+            const errorMessage = error.message || 'Failed to sign up, please try again.';
+            setAlertMessage(errorMessage);
+            setShowAlert(true); 
+        }
+    }
 
     const defaultTheme = createTheme();
 
@@ -62,6 +166,21 @@ function SignUp() {
               }}
             >
             <Box sx={{ p: 2, mb: 3}}>
+            {showAlert && ( 
+                <Alert 
+                    severity={alertSeverity} 
+                    onClose={() => setShowAlert(false)}
+                    // style={{ position: 'absolute', top: '20', left: '50', zIndex: 2 }}
+                >
+                    {/* {alertMessage} */}
+                    {alertMessage.split(' ').map((word, index) => (  // Split the message into words
+                    <span key={index}>
+                        {word === 'here' ? <Link to="/signin" className='link'>here</Link> : word} 
+                        {' '} {/* Add spaces between words */}
+                    </span>
+                        ))}
+                </Alert>
+            )}
             <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Typography gutterBottom variant="h5" component="div" sx={{
                     fontFamily: 'Georgia, serif', 
@@ -78,6 +197,15 @@ function SignUp() {
             <Typography color="text.secondary" variant="body2" s={{fontSize: 'calc(10px + 0.5vmin)'}}>
             Register as a new user to our task service platform to facilitate your task outsourcing and co-working
             </Typography>
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={4000} // Adjust duration as needed
+                onClose={() => setOpenSnackbar(false)}
+            >
+            <MuiAlert severity="error" onClose={() => setOpenSnackbar(false)}>
+                {snackbarMessage}
+            </MuiAlert>
+            </Snackbar>
             <Divider/>
             </Box>
             <Typography component="h1" variant="h5" sx={{mb:4}}>
@@ -117,6 +245,9 @@ function SignUp() {
                         autoComplete='username'
                         value={values.username}
                         onChange={handleChange('username')}
+                        // This will be true if 'username' is present and it is not ''
+                        error={errors['username']} 
+                        helperText={errors['username'] ? (errors['username'].message || errors['username']) : ''}
                     />
                 </Grid>
 
@@ -129,6 +260,8 @@ function SignUp() {
                         type="email"
                         value={values.email}
                         onChange={handleChange('email')}
+                        error={errors['email']} 
+                        helperText={errors['email'] ? (errors['email'].message || errors['email']) : ''}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -136,10 +269,12 @@ function SignUp() {
                         variant="outlined"
                         required
                         fullWidth
-                        label="Conform Email Address"
+                        label="Confirm Email Address"
                         autoComplete="email"
                         value={values.confirmEmail}
                         onChange={handleChange('confirmEmail')}
+                        error={errors['confirmEmail']} 
+                        helperText={errors['confirmEmail'] ? (errors['confirmEmail'].message || errors['confirmEmail']) : ''}
                     />
                 </Grid>
 
@@ -153,6 +288,8 @@ function SignUp() {
                         autoComplete="password"
                         value={values.password}
                         onChange={handleChange('password')}
+                        error={errors['password']} 
+                        helperText={errors['password'] ? (errors['password'].message || errors['password']) : ''}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -164,9 +301,11 @@ function SignUp() {
                         type="password"
                         value={values.confirmPassword}
                         onChange={handleChange('confirmPassword')}
+                        error={errors['confirmPassword']} 
+                        helperText={errors['confirmPassword'] ? (errors['confirmPassword'].message || errors['confirmPassword']) : ''}
                     />
                 </Grid>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                 <FormControlLabel
                 control={
                     <Switch
@@ -179,7 +318,7 @@ function SignUp() {
                     label= "Are you a employer"
                     style={{ marginLeft: 0, display: 'flex', alignItems: 'center' }} 
                 />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12}>
                     <Button
                         type="submit"
@@ -193,7 +332,7 @@ function SignUp() {
                 <Grid item xs={12}>
                     <Typography variant="body2" style={{ marginTop: '16px', textAlign: 'center' }}>
                         Already have an account? 
-                        <Link reloadDocument to="/signin" style={{ marginLeft: '5px'}}>
+                        <Link reloadDocument to="/signin" style={{ marginLeft: '5px'}} className='link'>
                             Sign in here
                         </Link>
                             </Typography>
@@ -201,7 +340,7 @@ function SignUp() {
                 <Grid item xs={12}>
                     <Typography variant="body2" style={{ marginTop: '16px', textAlign: 'center' }}>
                         Back to
-                        <Link reloadDocument to="/" style={{ marginLeft: '5px'}}>
+                        <Link reloadDocument to="/" style={{ marginLeft: '5px'}} className='link'>
                             Homepage
                         </Link>
                             </Typography>
@@ -215,8 +354,5 @@ function SignUp() {
     );
 
 }
-
-
-
 
 export default SignUp;

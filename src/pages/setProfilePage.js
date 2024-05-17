@@ -1,22 +1,21 @@
 import React from 'react';
-import SignIn from '../components/signIn';
+import SetProfile from '../components/setProfile';
 import FallingSquares from '../components/background'; 
 import Container from '@mui/material/Container'
 
-function SignInPage() {
+function SetProfilePage() {
   return (
     <div className="App">
       <header className="App-header">
         <FallingSquares />
 
-       
       <Container maxWidth="sm" sx={{zIndex: 2}}>
-        <SignIn />
+        <SetProfile />
       </Container>
-  
+
       </header>
     </div>
   );
 }
 
-export default SignInPage;
+export default SetProfilePage;

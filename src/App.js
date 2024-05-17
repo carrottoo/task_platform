@@ -3,10 +3,13 @@ import React from 'react';
 import SignUp from './components/signUp';
 import Dashboard from './components/dashboard';
 import DashboardEmployee from './components/dashboardEmployee';
-import Header from './components/header';
 import HomePage from './pages/homePage';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import SignInPage from './pages/siginInPage'; 
+import SetProfilePage from './pages/setProfilePage';
+import EmployerMainPage from './pages/employerMainPage';
+import UserProfilePage from './pages/userProfilePage';
+import EmployeeMainPage from './pages/empolyeeMainPage';
 // import NotFound from './components/notFound';
 
 function App() {
@@ -20,8 +23,10 @@ function App() {
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/employer" element={<Dashboard />} />
-        <Route path="/employee" element={<DashboardEmployee />} />
+        <Route path="/set_profile" element={<SetProfilePage />} />
+        <Route path="/employer" element={<EmployerMainPage />} />
+        <Route path="/employee" element={<EmployeeMainPage />} />
+        <Route path="/employer/profile" element={<UserProfilePage />} />
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
     </Router>

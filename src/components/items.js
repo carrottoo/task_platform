@@ -5,14 +5,29 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import GridViewIcon from '@mui/icons-material/GridView';
 import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import TaskIcon from '@mui/icons-material/Task';
+import LabelIcon from '@mui/icons-material/Label';
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import PendingIcon from '@mui/icons-material/Pending';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import Tooltip from '@mui/material/Tooltip';
+import { useNavigate } from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import { blue } from '@mui/material/colors';
 
-export const mainListItems = (
+export const MainListItems = () => {
+  const navigate = useNavigate();
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+  
+  return(
     <React.Fragment>
         {/* <ListItem>
           <ListItemAvatar>
@@ -22,34 +37,68 @@ export const mainListItems = (
           </ListItemAvatar>
           <ListItemText primary={username} secondary="User Profile" />
         </ListItem> */}
+      <Tooltip title="User Profile">
       <ListItemButton>
         <ListItemIcon>
           <AccountBoxRoundedIcon />
         </ListItemIcon>
         <ListItemText primary="Profile" />
       </ListItemButton>
+      </Tooltip>
+      <Tooltip title="Created Tasks">
       <ListItemButton>
         <ListItemIcon>
-          <GridViewIcon/>
+          <ListAltIcon/>
         </ListItemIcon>
-        <ListItemText primary="All Tasks" />
+        <ListItemText primary="Created Tasks" />
       </ListItemButton>
+      </Tooltip>
+      <Tooltip title="Assigned Tasks" > 
       <ListItemButton>
         <ListItemIcon>
-          <TaskIcon />
+          <AssignmentTurnedInIcon />
         </ListItemIcon>
-        <ListItemText primary="Owned Tasks" />
+        <ListItemText primary="Assigned Tasks" />
       </ListItemButton>
+      </Tooltip>
+      <Tooltip title="Unassigned Tasks">
+      <ListItemButton>
+        <ListItemIcon>
+          <PendingIcon />
+        </ListItemIcon>
+        <ListItemText primary="Unassigned Tasks" />
+      </ListItemButton>
+      </Tooltip>
+      <Tooltip title="Tasks to Review">
+      <ListItemButton>
+        <ListItemIcon>
+          <RateReviewIcon />
+        </ListItemIcon>
+        <ListItemText primary="Tasks to Review" />
+      </ListItemButton>
+      </Tooltip>
     </React.Fragment>
   );
+}
 
-export const secondaryListItems = (
-  <React.Fragment>
-    <ListItemButton>
-      <ListItemIcon>
-        <BookmarksIcon />
-      </ListItemIcon>
-      <ListItemText primary="Created Tags" />
-    </ListItemButton>
-  </React.Fragment>
-);
+
+export const SecondaryListItems = () => {
+  const navigate = useNavigate();
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+  
+  return(
+    <React.Fragment>
+      <Tooltip title="Created Tags" >
+      <ListItemButton>
+        <ListItemIcon>
+          <LabelIcon />
+        </ListItemIcon>
+        <ListItemText primary="Created Property Tags" />
+      </ListItemButton>
+      </Tooltip>
+    </React.Fragment>
+  );
+}
