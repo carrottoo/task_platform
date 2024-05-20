@@ -52,6 +52,7 @@ function SignUp() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+
         try {
 
             const { username, email, confirmEmail, password, confirmPassword, firstName, lastName } = values;

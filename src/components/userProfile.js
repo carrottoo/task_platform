@@ -2,8 +2,12 @@ import React, { useState, useEffect, useCallback  } from 'react';
 import { Box, TextField, Button, Typography, CircularProgress, Alert } from '@mui/material';
 import config from '../config/config'; 
 import ResetPasswordDialog from './resetPassword';
+import SessionExpiredDialog from './sessionExpiredDialog';
 import ErrorDisplay from './errorDisplay';
-import fieldMapping from './utility';
+import callApi  from './utils';
+import {userMapping} from './mapping';
+
+//TODO test rest password 
 
 const UserProfile = () => {
     const [editMode, setEditMode] = useState(false); 
@@ -15,17 +19,23 @@ const UserProfile = () => {
         lastLogin: '',
         dateJoined: ''
     });
+    const [sessionExpiredOpen, setSessionExpiredOpen] = useState(false);
 
     const [originalUser, setOriginalUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [errors, setErrors] = useState({
+        firstName: '',
+        lastName: '',
+        username: '',
+        email: ''
+    });
 
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertSeverity, setAlertSeverity] = useState('error');
 
     const storedData = JSON.parse(localStorage.getItem('userData'));
-    const token = storedData ? storedData.token : null;
     const userID = storedData ? storedData.userID : null;
 
     const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState(false);
@@ -40,67 +50,61 @@ const UserProfile = () => {
 
     const fetchUserData = useCallback(async () => {
         const apiUrl = `${config.API_BASE_URL}/users/${userID}/`;
-    
-        try {
-          const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Token ${token}`,
-              'Content-Type': 'application/json'
-            }
-          });
-    
-          if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
-              setAlertMessage('Session expired, please click here to sign in.');
-              setShowAlert(true);
-              return;
-            }
-    
-            setError('Unable to fetch user data');
-            setLoading(false);
-          }
-    
-          const userData = await response.json();
-    
-          // Reformat the last_login and date_joined 
-          const lastLoginTimestamp = userData.last_login;
-          const lastLoginDate = new Date(lastLoginTimestamp);
-      
-          const joinTimestamp = userData.date_joined;
-          const joinDate = new Date(joinTimestamp);
-          
-          const formattedUser = {
-            firstName: userData.first_name,
-            lastName: userData.last_name,
-            username: userData.username,
-            email: userData.email,
-            lastLogin: lastLoginDate.toLocaleString('en-US', { 
-                year: 'numeric', 
-                month: 'numeric', 
-                day: 'numeric',
-                hour: 'numeric', 
-                minute: 'numeric',
-                second: 'numeric',
-                timeZoneName: 'short'
-            }),
-            dateJoined: joinDate.toLocaleString('en-US', { 
-                year: 'numeric', 
-                month: 'numeric', 
-                day: 'numeric',
-                timeZoneName: 'short'
-            })
-          }
 
-          setUser(formattedUser);
-          setOriginalUser(formattedUser);
-          setLoading(false);
-    
-        } catch (error) {
-          setError(error.message || 'Unable to fetch user data');
-          setLoading(false);
+        try{
+            const result = await callApi(apiUrl)
+
+            if (result.error?.toLowerCase().includes('Session expired')){
+                setSessionExpiredOpen(true);
+                return;
+            }
+
+            if (result.error){
+                setError('Unable to fetch user data');
+                return;
+            }
+
+            const userData = result.ok;
+
+            const lastLoginTimestamp = userData.last_login;
+            const lastLoginDate = new Date(lastLoginTimestamp);
+        
+            const joinTimestamp = userData.date_joined;
+            const joinDate = new Date(joinTimestamp);
+          
+            const formattedUser = {
+                firstName: userData.first_name,
+                lastName: userData.last_name,
+                username: userData.username,
+                email: userData.email,
+                lastLogin: lastLoginDate.toLocaleString('en-US', { 
+                    year: 'numeric', 
+                    month: 'numeric', 
+                    day: 'numeric',
+                    hour: 'numeric', 
+                    minute: 'numeric',
+                    second: 'numeric',
+                    timeZoneName: 'short'
+                }),
+                dateJoined: joinDate.toLocaleString('en-US', { 
+                    year: 'numeric', 
+                    month: 'numeric', 
+                    day: 'numeric',
+                    timeZoneName: 'short'
+                })
+            }
+
+            setUser(formattedUser);
+            setOriginalUser(formattedUser);
+
+        }catch (error) {
+            setError(error.message || 'Unable to fetch user data');
+            
+        }finally{
+            setLoading(false);
         }
-      }, [token, userID]);
+
+      }, [userID, callApi]);
     
     useEffect(() => {
     fetchUserData();
@@ -108,6 +112,7 @@ const UserProfile = () => {
 
     const handleRetry = () => {
         setError('');
+        setErrors('');
         setLoading(true);
         fetchUserData();
         };
@@ -117,6 +122,10 @@ const UserProfile = () => {
             console.log('Toggling edit mode:', !prevEditMode);
             return !prevEditMode;
         });
+        setError('');
+        setErrors('');
+        setShowAlert(false);
+        fetchUserData();
     };
 
     const handleInputChange = (prop) => (event) => {
@@ -130,6 +139,11 @@ const UserProfile = () => {
             return { ...prevUser, [prop]: newValue }; // Update the state
         });
 
+        setShowAlert(false);
+        setError('');
+        setErrors('');
+        setLoading(false);
+
     };
 
     const handleSaveProfile = async () => {
@@ -137,7 +151,7 @@ const UserProfile = () => {
 
         const changedFields = {};
         for (const frontendField in user) {
-            const backendField = fieldMapping[frontendField];
+            const backendField = userMapping[frontendField];
             if (user[frontendField] !== originalUser[frontendField] && backendField) {
               changedFields[backendField] = user[frontendField];
             }
@@ -147,39 +161,53 @@ const UserProfile = () => {
 
         if(Object.keys(changedFields).length > 0){
 
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'PATCH',
-                    headers: {
-                    'Authorization': `Token ${token}`,
-                    'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(changedFields)
-            });
+            try{
+                console.log(changedFields)
+                const result = await callApi(apiUrl, 'PATCH', changedFields);
+                console.log(result);
 
-                if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        setAlertMessage('Session expired, please click here to sign in.');
-                        setShowAlert(true);
-                        return;
+
+                if (typeof result.error === 'string' && result.error.toLowerCase().includes('session expired')){
+                    setSessionExpiredOpen(true);
+                    return;
+                }
+
+                if (result.error){
+                    const formattedErrors = {};
+                    for (const frontendField in userMapping) { // Iterate through frontend fields
+                        const backendField = userMapping[frontendField];
+
+                        if (result.error[backendField]) { 
+                            formattedErrors[frontendField] = result.error[backendField];
+                        } else {
+                            formattedErrors[frontendField] = ''; // Set to empty string if not found in errors
+                        }
                     }
-            
-                    setError('Unable to update user data');
-                    setLoading(false);
+                    setErrors(formattedErrors);
+                    setAlertMessage('Failed to update profile.');
+                    setAlertSeverity('error');
+                    setShowAlert(true);
+                    return;
                 }
 
                 setAlertMessage('Profile updated successfully.');
                 setAlertSeverity('success');
                 setShowAlert(true);
                 setEditMode(false);
-
+        
             } catch (error) {
                 setAlertMessage(error.message||'Failed to update profile.');
-                setAlertSeverity('error');
+                setAlertSeverity('error')
                 setShowAlert(true);
             }
         };
+
+        setEditMode(false);
     }
+
+    const handleDialogClose = () => {
+        setSessionExpiredOpen(false);
+    };
 
     if (loading) {
         return (
@@ -194,7 +222,7 @@ const UserProfile = () => {
     }
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
         <Box width="50%" padding="20px" border="1px solid #ccc" borderRadius="8px">
             <Typography variant="h4" component="h2" gutterBottom>
             User Profile
@@ -211,6 +239,8 @@ const UserProfile = () => {
                 name="firstName"
                 value={user.firstName || ''}
                 onChange={handleInputChange('firstName')}
+                error={errors['firstName']}
+                helperText={errors['firstName'] ? errors['firstName'].message || errors['firstName'] : ''}
                 margin="normal"
                 variant='standard'
                 fullWidth
@@ -221,6 +251,8 @@ const UserProfile = () => {
                 name="lastName"
                 value={user.lastName || ''}
                 onChange={handleInputChange('lastName')}
+                error={errors['lastName']}
+                helperText={errors['lastName'] ? errors['lastName'].message || errors['lastName'] : ''}
                 margin="normal"
                 variant='standard'
                 fullWidth
@@ -231,6 +263,8 @@ const UserProfile = () => {
                 name="name"
                 value={user.username || ''}
                 onChange={handleInputChange('username')}
+                error={errors['username']}
+                helperText={errors['username'] ? errors['username'].message || errors['username'] : ''}
                 margin="normal"
                 variant='standard'
                 fullWidth
@@ -241,6 +275,8 @@ const UserProfile = () => {
                 name="email"
                 value={user.email || ''}
                 onChange={handleInputChange('email')}
+                error={errors['email']}
+                helperText={errors['email'] ? errors['email'].message || errors['email'] : ''}
                 margin="normal"
                 variant='standard'
                 fullWidth
@@ -251,20 +287,24 @@ const UserProfile = () => {
                 name="lastLogin"
                 value={user.lastLogin|| ''}
                 onChange={handleInputChange('lastLogin')}
+                error={errors['lastLogin']}
+                helperText={errors['lastLogin'] ? errors['lastLogin'].message || errors['lastLogin'] : ''}
                 margin="normal"
                 variant='standard'
                 fullWidth
-                disabled='true'
+                disabled={true}
                 />
                 <TextField
                 label="Date joined"
                 name="dateJoined"
                 value={user.dateJoined|| ''}
                 onChange={handleInputChange('dateJoined')}
+                error={errors['dateJoined']}
+                helperText={errors['dateJoined'] ? errors['dateJoined'].message || errors['dateJoined'] : ''}
                 margin="normal"
                 variant='standard'
                 fullWidth
-                disabled='true'
+                disabled={true}
                 />
                 {/* Add more fields as needed */}
                 <Box display="flex" justifyContent="space-between" marginTop="20px">
@@ -286,7 +326,7 @@ const UserProfile = () => {
             )}
             <ResetPasswordDialog open={openResetPasswordDialog} onClose={handleCloseResetPasswordDialog} />
         </Box>
-        
+        <SessionExpiredDialog open={sessionExpiredOpen} onClose={handleDialogClose} />
         </Box>
     );
 };

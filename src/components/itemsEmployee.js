@@ -23,6 +23,7 @@ import Avatar from '@mui/material/Avatar';
 import { blue } from '@mui/material/colors';
 import { Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export const MainListItems = () => {
   const navigate = useNavigate();
@@ -35,31 +36,38 @@ export const MainListItems = () => {
   return(
     <React.Fragment>
       <Tooltip title='User Profile'>
-      <ListItemButton onClick={handleNavigate('/employee/profile')}>
+      <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <ListItemButton>
         <ListItemIcon>
           <AccountBoxRoundedIcon />
         </ListItemIcon>
         <ListItemText primary="Profile" />
       </ListItemButton>
+      </Link>
       </Tooltip>
       <Tooltip title='All Tasks'>
-      <ListItemButton onClick={handleNavigate('/employee/all_tasks')}>
+      <Link to="/employee/all_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <ListItemButton>
         <ListItemIcon>
           <ListAltIcon/>
         </ListItemIcon>
         <ListItemText primary="All Tasks" />
       </ListItemButton>
+      </Link>
       </Tooltip>
       <Tooltip title="Assigned Tasks">
-      <ListItemButton onClick={handleNavigate('/employee/assigned_tasks')}>
+      <Link to="/employee/assigned_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <ListItemButton>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="Assigned Tasks" />
       </ListItemButton>
+      </Link>
       </Tooltip>
       <Tooltip title="Submitted Tasks">
-      <ListItemButton onClick={handleNavigate('/employee/submitted_tasks')}>
+      <Link to="/employee/submitted_tasks" style={{ textDecoration: 'none', color: 'inherit' }}></Link>
+      <ListItemButton>
         <ListItemIcon>
           <PublishedWithChangesIcon />
         </ListItemIcon>
@@ -67,20 +75,24 @@ export const MainListItems = () => {
       </ListItemButton>
       </Tooltip>
       <Tooltip title='Completed Tasks'>
-      <ListItemButton onClick={handleNavigate('/employee/completed_tasks')}>
+      <Link to="/employee/completed_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <ListItemButton>
         <ListItemIcon>
           <AssignmentTurnedInIcon />
         </ListItemIcon>
         <ListItemText primary="Completed Tasks" />
       </ListItemButton>
+      </Link>
       </Tooltip>
       <Tooltip title="Liked Tasks">
-      <ListItemButton onClick={handleNavigate('/employee/liked_tasks')}>
+      <Link to="/employee/liked_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <ListItemButton>
         <ListItemIcon>
           <FavoriteIcon />
         </ListItemIcon>
         <ListItemText primary="Liked Tasks" />
       </ListItemButton>
+      </Link>
       </Tooltip>
     </React.Fragment>
   );
@@ -97,20 +109,24 @@ export const SecondaryListItems = () => {
   return(
     <React.Fragment>
       <Tooltip title="Created Tags">
+      <Link to="/created_property_tags" style={{ textDecoration: 'none', color: 'inherit' }}>
       <ListItemButton onClick={handleNavigate('/employee/created_tags')}>
         <ListItemIcon>
           <LabelIcon />
         </ListItemIcon>
         <ListItemText primary="Created Property Tags" />
       </ListItemButton>
+      </Link>
       </Tooltip>
       <Tooltip title="Interested Tags">
+      <Link to="/interested_tags" style={{ textDecoration: 'none', color: 'inherit' }}>
       <ListItemButton onClick={handleNavigate('/employee/interested_tags')}>
         <ListItemIcon>
           <StarIcon/>
         </ListItemIcon>
         <ListItemText primary="Interestd Property Tags" />
       </ListItemButton>
+      </Link>
       </Tooltip>
     </React.Fragment>
   );

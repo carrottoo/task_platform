@@ -10,6 +10,7 @@ import SetProfilePage from './pages/setProfilePage';
 import EmployerMainPage from './pages/employerMainPage';
 import UserProfilePage from './pages/userProfilePage';
 import EmployeeMainPage from './pages/empolyeeMainPage';
+import CreatedTasksPage from './pages/createdTasksPage';
 // import NotFound from './components/notFound';
 
 function App() {
@@ -26,7 +27,8 @@ function App() {
         <Route path="/set_profile" element={<SetProfilePage />} />
         <Route path="/employer" element={<EmployerMainPage />} />
         <Route path="/employee" element={<EmployeeMainPage />} />
-        <Route path="/employer/profile" element={<UserProfilePage />} />
+        <Route path="/profile" element={<UserProfilePage />} />
+        <Route path="/employer/created_tasks" element={<CreatedTasksPage />} />
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
     </Router>
