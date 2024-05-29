@@ -2,13 +2,15 @@ import Dashboard from '../components/dashboardEmployer';
 import DashboardEmployee from '../components/dashboardEmployee';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../components/theme';
-import CreatedTasks from '../components/allTasks';
+import CreatedTags from '../components/createdTags';
 import { Typography, Box} from '@mui/material';
 
-export default function CreatedTasksPage(){
+
+export default function CreatedPropertyPage(){
     const storedData = JSON.parse(localStorage.getItem("userData"));
     const userProfile = storedData ? storedData.profile : null;
 
+    
     if (!userProfile){
         return (
             <ThemeProvider theme={theme}>
@@ -17,29 +19,25 @@ export default function CreatedTasksPage(){
                 </Box>
             </ThemeProvider>
         )
-    }     
-    
+    }
+
     if (userProfile === 'employer'){
         return (
             <ThemeProvider theme={theme}>
                 <Dashboard>
-                    <CreatedTasks/>
+                    <CreatedTags />
                 </Dashboard>
-            
             </ThemeProvider>
         )
+
     }else{
         return (
             <ThemeProvider theme={theme}>
                 <DashboardEmployee>
-                    <CreatedTasks />
+                    <CreatedTags />
                 </DashboardEmployee>
             </ThemeProvider>
         )
 
-
     }
-
-    
-
 }

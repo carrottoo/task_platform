@@ -11,7 +11,7 @@ import { visuallyHidden } from '@mui/utils';
 import { getComparator, stableSort } from './comparator';
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, hideIdColumn } = props;
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, hideIdColumn, selectable, hasActions } = props;
 
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -20,22 +20,25 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all rows',
-            }}
-          />
-        </TableCell>
+        {selectable && (
+          <TableCell padding="checkbox">
+            <Checkbox
+              color="primary"
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{
+                'aria-label': 'select all rows',
+              }}
+            />
+          </TableCell>
+        )}
         {headCells.map((headCell) => (
           (!hideIdColumn || headCell.id !== 'displayId') && (
             <TableCell
               key={headCell.id}
-              align={headCell.numeric ? 'right' : 'left'}
+              // align={headCell.numeric ? 'right' : 'left'}
+              align="center" 
               padding="normal"
               sortDirection={orderBy.find((item) => item.id === headCell.id)?.order || false}
             >
@@ -56,6 +59,11 @@ function EnhancedTableHead(props) {
             </TableCell>
           )
         ))}
+        {hasActions && (
+          <TableCell sx={{fontWeight: 'bold'}} align="center" >
+            Actions
+          </TableCell>
+        )}
       </TableRow>
     </TableHead>
   );
@@ -86,7 +94,7 @@ function EnhancedTableToolbar(props) {
         </Typography>
       ) : (
         <Typography
-          sx={{ flex: '1 1 100%' , fontWeight: 'bold'}}
+          sx={{ flex: '1 1 100%', fontWeight: 'bold' }}
           variant="h6"
           id="tableTitle"
           component="div"
@@ -116,7 +124,7 @@ function EnhancedTableToolbar(props) {
               <FilterListIcon />
             </IconButton>
           </Tooltip> */}
-          <Button onClick={onClearSort} variant="text" color="primary" sx={{ ml: 2 }}>
+          <Button onClick={onClearSort} variant="text" color="primary" size="small" sx={{ ml: 2 }}>
             Clear Sort
           </Button>
         </>
@@ -131,9 +139,11 @@ EnhancedTable.propTypes = {
   cellContents: PropTypes.func.isRequired,
   heading: PropTypes.string.isRequired,
   hideIdColumn: PropTypes.bool, // Add prop to control hiding the ID column
+  renderActions: PropTypes.func, // Make prop optional to render action buttons
+  selectable: PropTypes.bool, // Add prop to control checkbox visibility
 };
 
-export default function EnhancedTable({ rows, headCells, cellContents, heading, hideIdColumn }) {
+export default function EnhancedTable({ rows, headCells, cellContents, heading, hideIdColumn, renderActions, selectable = true }) {
   const [order, setOrder] = useState([]);
   const [orderBy, setOrderBy] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -166,6 +176,11 @@ export default function EnhancedTable({ rows, headCells, cellContents, heading, 
   };
 
   const handleClick = (event, id) => {
+    if (event.target.closest('td:last-child')) { 
+      event.stopPropagation(); // Prevent the event from bubbling up to the row
+      return; // Do not select the row
+    }
+    
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
@@ -217,6 +232,8 @@ export default function EnhancedTable({ rows, headCells, cellContents, heading, 
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
+  const hasActions = typeof renderActions === 'function';
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
@@ -238,6 +255,8 @@ export default function EnhancedTable({ rows, headCells, cellContents, heading, 
               onRequestSort={handleRequestSort}
               rowCount={filteredRows.length}
               hideIdColumn={hideIdColumn}
+              selectable={selectable}
+              hasActions={hasActions}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
@@ -247,28 +266,35 @@ export default function EnhancedTable({ rows, headCells, cellContents, heading, 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.id)}
+                    onClick={selectable ? (event) => handleClick(event, row.id) : null}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={row.id}
                     selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
+                    sx={{ cursor: selectable ? 'pointer' : 'default' }}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{ 'aria-labelledby': labelId }}
-                      />
-                    </TableCell>
+                    {selectable && (
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{ 'aria-labelledby': labelId }}
+                        />
+                      </TableCell>
+                    )}
                     {cellContents(row, labelId, hideIdColumn)}
+                    {hasActions && (
+                      <TableCell padding="normal" align="center">
+                        {renderActions(row)}
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={headCells.length + (selectable ? 1 : 0) + (hasActions ? 1 : 0)} />
                 </TableRow>
               )}
             </TableBody>
@@ -287,3 +313,5 @@ export default function EnhancedTable({ rows, headCells, cellContents, heading, 
     </Box>
   );
 }
+
+

@@ -7,7 +7,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate, Link } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
-import { Task } from '@mui/icons-material';
 import config from '../config/config';
 
 function AddTask(props){
@@ -107,7 +106,7 @@ function AddTask(props){
                 setTimeout(() => {
                     props.setOpen(false); 
                     navigate(0); // Reload the current page
-                  }, 2000); 
+                  }, 800); 
             }else{
                 if (response.status === 401 ||response.status === 403) {
                     setAlertMessage('Session expired, please click here to sign in.');

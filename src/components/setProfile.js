@@ -21,8 +21,6 @@ function SetProfile(){
     const [alertMessage, setAlertMessage] = useState('');
     const [alertSeverity, setAlertSeverity] = useState('error');
 
-    const [error, setError] = useState(false);
-
 
     const handleEmployer = async () => {
         setIsEmployer(true);
@@ -56,6 +54,13 @@ function SetProfile(){
                 setAlertMessage('Profile set successfully!')
                 setAlertSeverity('success');
                 setShowAlert(true);
+
+                const updatedData = { 
+                    ...storedData, 
+                    profile: data.isEmployer? 'employer' : 'employee '
+                  };
+                
+                localStorage.setItem("userData", JSON.stringify(updatedData));
 
                 if (data.isEmployer){
                     setTimeout(() => {

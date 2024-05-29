@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Box, CircularProgress, Typography, TableCell } from "@mui/material";
+import { Box, CircularProgress, Typography, TableCell, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions,Button} from "@mui/material";
 import config from "../config/config";
 import callApi from "./utils";
+import { formatTaskData } from "./utils";
 import { taskMapping } from "./mapping";
 import EnhancedTable from "./enhancedTable";
+import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
+import DetailsDialog from "./detailsDialog";
+import SessionExpiredDialog from "./sessionExpiredDialog";
+
 
 const headCells = [
   { id: 'displayId', numeric: true, disablePadding: true, label: 'ID' },
@@ -31,7 +37,8 @@ const cellContents = (row, labelId, hideIdColumn) => (
   </>
 );
 
-function CreatedTasks() {
+
+function UnassignedTasks() {
   const storedData = JSON.parse(localStorage.getItem("userData"));
   const userID = storedData ? storedData.userID : null;
 
@@ -39,6 +46,8 @@ function CreatedTasks() {
   const [sessionExpiredOpen, setSessionExpiredOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -59,24 +68,13 @@ function CreatedTasks() {
 
         const taskData = result.ok.results || [];
 
-        const formattedTasks = taskData.map((task, index) => {
-          const formattedTask = {};
-          for (const frontendField in taskMapping) {
-            const backendField = taskMapping[frontendField];
-            formattedTask[frontendField] = task[backendField] || "";
-          }
-
-          formattedTask.createdOn = new Date(task.created_on).toLocaleDateString();
-          formattedTask.updatedOn = new Date(task.updated_on).toLocaleDateString();
-          formattedTask.id = task.id; // Use backend id for internal purposes
-          formattedTask.displayId = index + 1; // Use index for display purposes
-
-          return formattedTask;
-        });
-
+        const filteredTasks = taskData.filter(task => task.assignee === null && task.status === 'Not started');
+        const formattedTasks =  formatTaskData(filteredTasks, taskMapping);
         setTasks(formattedTasks);
+
       } catch (error) {
         setError(error.message || "Unable to fetch user data");
+
       } finally {
         setLoading(false);
       }
@@ -86,6 +84,37 @@ function CreatedTasks() {
       fetchTasks();
     }
   }, [userID]);
+
+  const handleDetail = (task) => {
+    setSelectedTask(task);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleSessionExpiredDialogClose = () =>{
+    setSessionExpiredOpen(false);
+  }
+
+  const renderActions = (row) => (
+    <>
+      <Tooltip title="Details">
+        <IconButton onClick={() => handleDetail(row)}>
+          <InfoIcon />
+        </IconButton>
+      </Tooltip>
+    </>
+  );
+
+  if (tasks.length === 0) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
+        <Typography sx={{fontSize: 22}}>All of your tasks has been taken by other users</Typography>
+      </Box>
+    );
+  }
 
   if (loading) return <CircularProgress />;
 
@@ -98,14 +127,16 @@ function CreatedTasks() {
           rows={tasks}
           headCells={headCells}
           cellContents={cellContents}
-          heading="Created Tasks"
+          heading="Unassigned Tasks"
           hideIdColumn={true} // Pass the prop to hide the ID column
+          renderActions={renderActions}
+          selectable={true} // Pass the prop to enable/disable checkboxes
         />
+        {selectedTask && <DetailsDialog task={selectedTask} open={openDialog} onClose={handleCloseDialog} title='Task Details' />}
       </Box>
+      <SessionExpiredDialog open={sessionExpiredOpen} onClose={handleSessionExpiredDialogClose} />
     </Box>
   );
 }
 
-export default CreatedTasks;
-
-
+export default UnassignedTasks;

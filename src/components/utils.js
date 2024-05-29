@@ -1,4 +1,5 @@
 
+
 export default async function callApi(url, method = 'GET', body = null) {
     const storedData = JSON.parse(localStorage.getItem('userData') || '{}'); 
     const token = storedData?.token; 
@@ -20,8 +21,14 @@ export default async function callApi(url, method = 'GET', body = null) {
         const data = await response.json();
   
         if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
+            
+            if (method === 'GET' && (response.status === 401 || response.status === 403)) {
                 return {'error': 'Session expired, please sign in again.' }; 
+            }
+
+            if (response.status === 401){
+                return {'error': 'Session expired, please sign in again.' }; 
+
             }
 
             const errors = data.errors; 
@@ -46,3 +53,29 @@ export default async function callApi(url, method = 'GET', body = null) {
     }
   }
   
+
+  export const formatTaskData = (taskData, taskMapping) => {
+    return taskData.map((task, index) => {
+        const formattedTask = {};
+        for (const frontendField in taskMapping) {
+            const backendField = taskMapping[frontendField];
+            formattedTask[frontendField] = task[backendField] || "";
+        }
+
+        formattedTask.createdOn = new Date(task.created_on).toLocaleDateString();
+        formattedTask.updatedOn = new Date(task.updated_on).toLocaleDateString();
+        formattedTask.id = task.id; 
+        formattedTask.displayId = index + 1; 
+        formattedTask.isSubmitted = task.is_submitted ? 'Yes' : 'No';
+        formattedTask.isApproved = task.is_approved ? 'Yes' : 'No';
+        formattedTask.isActive = task.is_active ? 'Yes' : 'No';
+        formattedTask.assignee = task.assignee_name ? task.assignee_name : 'Not assigned';
+        formattedTask.submittedOn = task.submitted_on ? new Date(task.submitted_on).toLocaleDateString() : 'N/A';
+        formattedTask.approvedOn = task.approved_on ? new Date(task.approved_on).toLocaleDateString() : 'N/A';
+        if (task.output.trim().length === 0) {
+            formattedTask.output = 'N/A'; 
+        }
+        
+        return formattedTask;
+    });
+};

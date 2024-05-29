@@ -81,7 +81,7 @@ function AddTag(props){
                 setTimeout(() => {
                     props.setOpen(false); 
                     navigate(0); // Reload the current page
-                  }, 2000);
+                  }, 500);
             } else {
                 if (response.status === 401 ||response.status === 403) {
                     setAlertMessage('Session expired, please click here to sign in.');

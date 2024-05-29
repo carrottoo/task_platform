@@ -16,6 +16,7 @@ const UserProfile = () => {
         lastName: '',
         username: '',
         email: '',
+        profile: '',
         lastLogin: '',
         dateJoined: ''
     });
@@ -37,6 +38,7 @@ const UserProfile = () => {
 
     const storedData = JSON.parse(localStorage.getItem('userData'));
     const userID = storedData ? storedData.userID : null;
+    const userProfile = storedData ? storedData.profile : null;
 
     const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState(false);
 
@@ -52,7 +54,7 @@ const UserProfile = () => {
         const apiUrl = `${config.API_BASE_URL}/users/${userID}/`;
 
         try{
-            const result = await callApi(apiUrl)
+            const result = await callApi(apiUrl);
 
             if (result.error?.toLowerCase().includes('Session expired')){
                 setSessionExpiredOpen(true);
@@ -77,6 +79,7 @@ const UserProfile = () => {
                 lastName: userData.last_name,
                 username: userData.username,
                 email: userData.email,
+                profile: userProfile,
                 lastLogin: lastLoginDate.toLocaleString('en-US', { 
                     year: 'numeric', 
                     month: 'numeric', 
@@ -224,7 +227,7 @@ const UserProfile = () => {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
         <Box width="50%" padding="20px" border="1px solid #ccc" borderRadius="8px">
-            <Typography variant="h4" component="h2" gutterBottom>
+            <Typography variant="h4" component="h2" sx={{color: '#3B3B3B'}} gutterBottom>
             User Profile
             </Typography>
             {showAlert && (
@@ -281,6 +284,15 @@ const UserProfile = () => {
                 variant='standard'
                 fullWidth
                 disabled={!editMode}
+                />
+                <TextField
+                label="Identity profile"
+                name="profile"
+                value={userProfile || ''}
+                margin="normal"
+                variant='standard'
+                fullWidth
+                disabled={true}
                 />
                 <TextField
                 label="Last login"

@@ -14,18 +14,19 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Link } from 'react-router-dom';
-import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import PostAddIcon from '@mui/icons-material/PostAdd';
+import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { MainListItems, SecondaryListItems} from './itemsEmployee';
-import Tooltip from '@mui/material/Tooltip';
+import { MainListItems, SecondaryListItems } from './items';
 import AddTask from './addTask';
+import Tooltip from '@mui/material/Tooltip';
 import AddTag from './addTag';
-import theme from './theme';
+import theme  from './theme';
+
 
 const drawerWidth = 240;
 
@@ -82,7 +83,7 @@ const handleLogout = () => {
 };
 
 
-export default function DashboardEmployee({  children }) {
+export default function Dashboard({ children }) {
 
   const [open_task, setOpenTask] = React.useState(false);
   const [open_drawer, setOpenDrawer] = React.useState(false);
@@ -102,7 +103,6 @@ export default function DashboardEmployee({  children }) {
   const handleClickOpenTag = () => {
     setOpenTag(true)
   }
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -134,11 +134,19 @@ export default function DashboardEmployee({  children }) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              <Link to="/employee" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Link to="/employer" style={{ textDecoration: 'none', color: 'inherit' }}>
                 Dashboard
               </Link>
             </Typography>
             </Tooltip>
+            <Tooltip title="Create New Task">
+            <IconButton color="inherit" onClick={handleClickOpen}>
+              <Badge color="secondary">
+                <AddTaskIcon/>
+              </Badge>
+            </IconButton>
+            </Tooltip>
+            <AddTask open={open_task} setOpen={setOpenTask} />
             <Tooltip title="Create Property Tag">
             <IconButton color="inherit" onClick={handleClickOpenTag}>
               <Badge color="secondary">
@@ -178,9 +186,9 @@ export default function DashboardEmployee({  children }) {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <MainListItems/>
+            <MainListItems />
             <Divider sx={{ my: 1 }} />
-            <SecondaryListItems/>
+            <SecondaryListItems />
           </List>
         </Drawer>
         <Box

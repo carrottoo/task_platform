@@ -2,10 +2,10 @@ import Dashboard from '../components/dashboardEmployer';
 import DashboardEmployee from '../components/dashboardEmployee';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../components/theme';
-import CreatedTasks from '../components/allTasks';
+import SubmittedTasks from '../components/submittedTasks';
 import { Typography, Box} from '@mui/material';
 
-export default function CreatedTasksPage(){
+export default function TasksToReviewPage(){
     const storedData = JSON.parse(localStorage.getItem("userData"));
     const userProfile = storedData ? storedData.profile : null;
 
@@ -17,29 +17,24 @@ export default function CreatedTasksPage(){
                 </Box>
             </ThemeProvider>
         )
-    }     
-    
+    }
+
     if (userProfile === 'employer'){
+
         return (
             <ThemeProvider theme={theme}>
                 <Dashboard>
-                    <CreatedTasks/>
+                    <SubmittedTasks/>
                 </Dashboard>
-            
             </ThemeProvider>
         )
     }else{
-        return (
+        return(
             <ThemeProvider theme={theme}>
-                <DashboardEmployee>
-                    <CreatedTasks />
-                </DashboardEmployee>
-            </ThemeProvider>
+            <DashboardEmployee>
+                <SubmittedTasks/>
+            </DashboardEmployee>
+        </ThemeProvider>
         )
-
-
     }
-
-    
-
 }

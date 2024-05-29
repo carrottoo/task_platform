@@ -98,6 +98,14 @@ function SignIn() {
                     }, 1500); 
                     
                 }else{
+                    const storedData = JSON.parse(localStorage.getItem('userData'))
+                    const updatedData = { 
+                        ...storedData, 
+                        profile: profileData.isEmployer? 'employer' : 'employee '
+                      };
+                    
+                    localStorage.setItem("userData", JSON.stringify(updatedData));
+
                     setAlertMessage('Signing in ...');
                     setAlertSeverity('success');
                     setShowAlert(true)

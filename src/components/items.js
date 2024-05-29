@@ -2,23 +2,14 @@ import * as React from 'react';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import GridViewIcon from '@mui/icons-material/GridView';
 import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import BookmarksIcon from '@mui/icons-material/Bookmarks';
-import TaskIcon from '@mui/icons-material/Task';
 import LabelIcon from '@mui/icons-material/Label';
+import HistoryIcon from '@mui/icons-material/History';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import PendingIcon from '@mui/icons-material/Pending';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import Tooltip from '@mui/material/Tooltip';
-import { useNavigate } from 'react-router-dom';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import { blue } from '@mui/material/colors';
 import { Link } from 'react-router-dom';
 
 export const MainListItems = () => {
@@ -44,7 +35,7 @@ export const MainListItems = () => {
       </Link>
       </Tooltip>
       <Tooltip title="Created Tasks">
-      <Link to="/employer/created_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <Link to="/all_created_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
       <ListItemButton>
         <ListItemIcon>
           <ListAltIcon/>
@@ -54,7 +45,7 @@ export const MainListItems = () => {
       </Link>
       </Tooltip>
       <Tooltip title="Assigned Tasks" > 
-      <Link to="/employer/assigned_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <Link to="/assigned_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
       <ListItemButton>
         <ListItemIcon>
           <AssignmentTurnedInIcon />
@@ -64,7 +55,7 @@ export const MainListItems = () => {
       </Link>
       </Tooltip>
       <Tooltip title="Unassigned Tasks">
-      <Link to="/employer/unassigned_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <Link to="/unassigned_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
       <ListItemButton>
         <ListItemIcon>
           <PendingIcon />
@@ -78,6 +69,16 @@ export const MainListItems = () => {
       <ListItemButton>
         <ListItemIcon>
           <RateReviewIcon />
+        </ListItemIcon>
+        <ListItemText primary="Tasks to Review" />
+      </ListItemButton>
+      </Link>
+      </Tooltip>
+      <Tooltip title="Approved tasks">
+      <Link to="/employer/approved_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <ListItemButton>
+        <ListItemIcon>
+          <HistoryIcon />
         </ListItemIcon>
         <ListItemText primary="Tasks to Review" />
       </ListItemButton>

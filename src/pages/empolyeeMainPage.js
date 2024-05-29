@@ -2,7 +2,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import theme from '../components/theme';
 import { Container, Grid, Paper, Typography, Divider  } from '@mui/material';
-import Dashboard from '../components/dashboard';
+import DashboardEmployee from '../components/dashboardEmployee';
 import DateCard from '../components/dateCard'
 import TaskCards from '../components/TaskCards';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
@@ -14,9 +14,9 @@ export default function EmployeeMainPage() {
 
     return (
         <ThemeProvider theme={theme}>
-            <Dashboard>
+            <DashboardEmployee>
 
-            </Dashboard>
+            </DashboardEmployee>
             </ThemeProvider>
     )
 }
