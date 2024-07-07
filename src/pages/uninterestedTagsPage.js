@@ -1,14 +1,15 @@
+import GeneralTagComponent from '../components/generalTagComponent';
 import Dashboard from '../components/dashboard';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../components/theme';
-import AssignedTasks from '../components/assignedTasks';
 import { Typography, Box} from '@mui/material';
 
-export default function AssignedTasksPage(){
+export default function UninterestedPropertyPage(){
     const storedData = JSON.parse(localStorage.getItem("userData"));
     const userProfile = storedData ? storedData.profile : null;
+    const filterCriteria = (property) => property.is_interested === false
 
-
+    
     if (!userProfile){
         return (
             <ThemeProvider theme={theme}>
@@ -19,13 +20,17 @@ export default function AssignedTasksPage(){
         )
     }
 
+
     return (
         <ThemeProvider theme={theme}>
             <Dashboard>
-                <AssignedTasks/>
-
+                <GeneralTagComponent
+                    isProperty={false}
+                    filter={true}
+                    filterCriteria={filterCriteria}
+                />
             </Dashboard>
-        
         </ThemeProvider>
     )
+
 }

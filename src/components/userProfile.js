@@ -38,6 +38,7 @@ const UserProfile = () => {
 
     const storedData = JSON.parse(localStorage.getItem('userData'));
     const userID = storedData ? storedData.userID : null;
+    const token = storedData ? storedData.token : null;
     const userProfile = storedData ? storedData.profile : null;
 
     const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState(false);
@@ -54,9 +55,9 @@ const UserProfile = () => {
         const apiUrl = `${config.API_BASE_URL}/users/${userID}/`;
 
         try{
-            const result = await callApi(apiUrl);
+            const result = await callApi(token, apiUrl);
 
-            if (result.error?.toLowerCase().includes('Session expired')){
+            if (result.sessionExpired){
                 setSessionExpiredOpen(true);
                 return;
             }
@@ -107,7 +108,7 @@ const UserProfile = () => {
             setLoading(false);
         }
 
-      }, [userID, callApi]);
+    }, [userID, userProfile]);
     
     useEffect(() => {
     fetchUserData();
@@ -118,7 +119,7 @@ const UserProfile = () => {
         setErrors('');
         setLoading(true);
         fetchUserData();
-        };
+    };
 
     const handleToggleEdit = () => {
         setEditMode((prevEditMode) => {
@@ -158,19 +159,16 @@ const UserProfile = () => {
             if (user[frontendField] !== originalUser[frontendField] && backendField) {
               changedFields[backendField] = user[frontendField];
             }
-          }
+        }
 
         console.log(changedFields);
 
         if(Object.keys(changedFields).length > 0){
 
             try{
-                console.log(changedFields)
                 const result = await callApi(apiUrl, 'PATCH', changedFields);
-                console.log(result);
 
-
-                if (typeof result.error === 'string' && result.error.toLowerCase().includes('session expired')){
+                if (result.sessionExpired){
                     setSessionExpiredOpen(true);
                     return;
                 }
@@ -225,8 +223,15 @@ const UserProfile = () => {
     }
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
-        <Box width="50%" padding="20px" border="1px solid #ccc" borderRadius="8px">
+        <Box display="flex" justifyContent="center" alignItems="center" height="90vh">
+        <Box 
+            width="50%" 
+            padding="20px" 
+            // border="1px solid #ccc" 
+            borderRadius="8px" 
+            maxHeight="calc(70vh - 20px)" 
+            overflow="auto"
+        >
             <Typography variant="h4" component="h2" sx={{color: '#3B3B3B'}} gutterBottom>
             User Profile
             </Typography>

@@ -1,10 +1,10 @@
 import Dashboard from '../components/dashboard';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../components/theme';
-import AssignedTasks from '../components/assignedTasks';
+import SubmittedTasks from '../components/submittedTasks';
 import { Typography, Box} from '@mui/material';
 
-export default function AssignedTasksPage(){
+export default function SubmittedTasksPage(){
     const storedData = JSON.parse(localStorage.getItem("userData"));
     const userProfile = storedData ? storedData.profile : null;
 
@@ -22,7 +22,7 @@ export default function AssignedTasksPage(){
     return (
         <ThemeProvider theme={theme}>
             <Dashboard>
-                <AssignedTasks/>
+                <SubmittedTasks/>
 
             </Dashboard>
         

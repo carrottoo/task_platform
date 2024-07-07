@@ -26,42 +26,34 @@ const cellContents = (row, labelId, hideIdColumn) => (
     </>
 );
 
-export default function AssignedTasks() {
+export default function CompletedTasks(){
     const storedData = JSON.parse(localStorage.getItem("userData"));
     const userProfile = storedData ? storedData.profile : null;
     const userID = storedData ? storedData.userID : null;
 
     let filterCriteria;
     let noContentMessage;
-    let renderUnassign;
-    let renderSubmit;
     let selectable;
 
     if (userProfile === 'employer'){
-        filterCriteria = (task) => task.assignee !== null && task.status === 'In progress';
-        noContentMessage = 'None of your tasks has been taken by other users';
-        renderUnassign = false;
-        renderSubmit = false;
-        selectable = true;
-    } else {
-        filterCriteria = (task) => task.assignee === userID && task.status === 'In progress';
-        noContentMessage = "You haven't picked up any task yet";
-        renderUnassign = true;
-        renderSubmit = true;
-        selectable = false;
+        filterCriteria = (task) => task.status === 'Done';
+        noContentMessage = 'None of your tasks has been completed by other users';
+        selectable=true;
+
+    }else{
+        filterCriteria = (task) => task.assignee === userID && task.status === 'Done';
+        noContentMessage = "You haven't completed any task yet";
+        selectable=false;
     }
 
     return (
-
-        <GeneralTaskComponent
+        <GeneralTaskComponent 
             filterCriteria={filterCriteria}
             noContentMessage={noContentMessage}
-            heading= 'Assigned Tasks'
+            heading = 'Completed Tasks'
             headCells={headCells}
             cellContents={cellContents}
-            renderUnassign={renderUnassign}
-            renderSubmit={renderSubmit}
             selectable={selectable}
         />
     );
-};
+}

@@ -1,16 +1,16 @@
 import Dashboard from '../components/dashboard';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../components/theme';
-import UnassignedTasks from '../components/unassignedTask';
+import CompletedTasks from '../components/completedTasks';
 
-export default function UnassignedTasksPage(){
+export default function CompletedTasksPage(){
 
     return (
         <ThemeProvider theme={theme}>
             <Dashboard>
 
 
-                <UnassignedTasks/>
+                <CompletedTasks/>
 
             </Dashboard>
         

@@ -101,18 +101,20 @@ function SignIn() {
                     const storedData = JSON.parse(localStorage.getItem('userData'))
                     const updatedData = { 
                         ...storedData, 
-                        profile: profileData.isEmployer? 'employer' : 'employee '
+                        profile: profileData.results[0].is_employer? 'employer' : 'employee'
                       };
                     
                     localStorage.setItem("userData", JSON.stringify(updatedData));
+
+                    // console.log(localStorage.getItem('userData'))
 
                     setAlertMessage('Signing in ...');
                     setAlertSeverity('success');
                     setShowAlert(true)
 
-                    console.log(profileData.results[0]['is_employer'])
+                    // console.log(profileData.results[0]['is_employer'])
 
-                    if (profileData.results[0]['is_employer']){
+                    if (profileData.results[0].is_employer){
                         setTimeout(() => {
                             window.location.href = '/employer';
                         }, 1000); // 1000 milliseconds = 1 seconds

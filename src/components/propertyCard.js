@@ -10,7 +10,7 @@ import MuiAlert from '@mui/material/Alert';
 import SessionExpiredDialog from './sessionExpiredDialog';
 
 
-const PropertyCards = () =>{
+const PropertyCard = () =>{
     const [propertyCount, setPropertyCount] = useState(0); 
 
     const storedData = JSON.parse(localStorage.getItem('userData'));
@@ -108,4 +108,4 @@ const PropertyCards = () =>{
 }
 
 
-export default PropertyCards
+export default PropertyCard

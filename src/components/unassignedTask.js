@@ -14,60 +14,46 @@ const headCells = [
 const cellContents = (row, labelId, hideIdColumn) => (
     <>
         {!hideIdColumn && (
-            <TableCell component="th" id={labelId} scope="row" padding="normal" >
+            <TableCell component="th" id={labelId} scope="row" padding="normal">
                 {row.displayId}
-            </TableCell>    
+            </TableCell>
         )}
-        <TableCell align="center" padding="normal">{row.name}</TableCell>
-        <TableCell align="center" padding="normal">{row.description}</TableCell>
-        <TableCell align="center" padding="normal">{row.status}</TableCell>
-        <TableCell align="center" padding="normal">{row.updatedOn}</TableCell>
-        <TableCell align="center" padding="normal">{row.createdOn}</TableCell>
+        <TableCell padding="normal">{row.name}</TableCell>
+        <TableCell padding="normal">{row.description}</TableCell>
+        <TableCell padding="normal">{row.status}</TableCell>
+        <TableCell padding="normal">{row.updatedOn}</TableCell>
+        <TableCell padding="normal">{row.createdOn}</TableCell>
     </>
 );
 
-export default function AllTasks() {
-
+export default function UnassignedTasks() {
     const storedData = JSON.parse(localStorage.getItem("userData"));
-    const userID = storedData ? storedData.userID : null;
     const userProfile = storedData ? storedData.profile : null;
 
-    const noContentMessage = 'No task has been created';
-    let heading; 
+    const filterCriteria = (task) => task.assignee === null && task.status === 'Not started';
+    let noContentMessage;
     let renderAssign;
-    let renderUnassign;
-    let renderLike;
-    let renderDislike
     let selectable;
 
     if (userProfile === 'employer'){
-        heading = 'Created Tasks'
+        noContentMessage = 'All of your tasks has been taken by other users';
         renderAssign = false;
-        renderUnassign = false;
-        renderLike = false;
-        renderDislike = false;
         selectable = true;
     } else {
-        heading = 'All Available Tasks'
+        noContentMessage = "All tasks have been assigened";
         renderAssign = true;
-        renderUnassign = true;
-        renderLike = true;
-        renderDislike = true;
         selectable = false;
     }
 
     return (
         <GeneralTaskComponent
+        filterCriteria={filterCriteria}
         noContentMessage={noContentMessage}
-        heading= {heading}
+        heading= 'Unassigned Tasks'
         headCells={headCells}
         cellContents={cellContents}
         renderAssign={renderAssign}
-        renderUnassign={renderUnassign}
-        renderLike={renderLike}
-        renderDislike={renderDislike}
         selectable={selectable}
-        filter={false}
     />
     );
 }

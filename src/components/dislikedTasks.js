@@ -26,42 +26,21 @@ const cellContents = (row, labelId, hideIdColumn) => (
     </>
 );
 
-export default function AssignedTasks() {
-    const storedData = JSON.parse(localStorage.getItem("userData"));
-    const userProfile = storedData ? storedData.profile : null;
-    const userID = storedData ? storedData.userID : null;
+export default function DislikedTasks(){
 
-    let filterCriteria;
-    let noContentMessage;
-    let renderUnassign;
-    let renderSubmit;
-    let selectable;
-
-    if (userProfile === 'employer'){
-        filterCriteria = (task) => task.assignee !== null && task.status === 'In progress';
-        noContentMessage = 'None of your tasks has been taken by other users';
-        renderUnassign = false;
-        renderSubmit = false;
-        selectable = true;
-    } else {
-        filterCriteria = (task) => task.assignee === userID && task.status === 'In progress';
-        noContentMessage = "You haven't picked up any task yet";
-        renderUnassign = true;
-        renderSubmit = true;
-        selectable = false;
-    }
+  
+    const filterCriteria = (user_behavior) => user_behavior.is_like === false;
+    const noContentMessage = 'You have not disliked any task';
 
     return (
-
-        <GeneralTaskComponent
+        <GeneralTaskComponent 
             filterCriteria={filterCriteria}
             noContentMessage={noContentMessage}
-            heading= 'Assigned Tasks'
+            heading = 'Like Tasks'
             headCells={headCells}
             cellContents={cellContents}
-            renderUnassign={renderUnassign}
-            renderSubmit={renderSubmit}
-            selectable={selectable}
+            selectable={false}
+            isUserBehavior={true}
         />
     );
-};
+}

@@ -4,21 +4,19 @@ import Tooltip from '@mui/material/Tooltip';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
 import LabelIcon from '@mui/icons-material/Label';
 import HistoryIcon from '@mui/icons-material/History';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import PendingIcon from '@mui/icons-material/Pending';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import LabelIcon from '@mui/icons-material/Label';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import StarIcon from '@mui/icons-material/Star';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 
 
 export const MainListItems = () => {
@@ -65,7 +63,7 @@ export const MainListItems = () => {
             </Link>
         </Tooltip>
         <Tooltip title="Tasks to Review">
-            <Link to="/employer/tasks_to_review" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link to="/submitted_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton>
                 <ListItemIcon>
                     <RateReviewIcon />
@@ -75,7 +73,7 @@ export const MainListItems = () => {
             </Link>
         </Tooltip>
         <Tooltip title="Approved tasks">
-            <Link to="/employer/approved_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link to="/approved_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton>
                 <ListItemIcon>
                     <HistoryIcon />
@@ -139,16 +137,17 @@ export const MainListItemsEmployee = () => {
             </Link>
         </Tooltip>
         <Tooltip title="Submitted Tasks">
-            <Link to="/employee/submitted_tasks" style={{ textDecoration: 'none', color: 'inherit' }}></Link>
+            <Link to="/submitted_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton>
                 <ListItemIcon>
                     <PublishedWithChangesIcon />
                 </ListItemIcon>
                 <ListItemText primary="Submitted Tasks" />
             </ListItemButton>
+            </Link>
         </Tooltip>
         <Tooltip title='Completed Tasks'>
-            <Link to="/employee/completed_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link to="/completed_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton>
                 <ListItemIcon>
                     <AssignmentTurnedInIcon />
@@ -158,12 +157,22 @@ export const MainListItemsEmployee = () => {
             </Link>
         </Tooltip>
         <Tooltip title="Liked Tasks">
-            <Link to="/employee/liked_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link to="/liked_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton>
                 <ListItemIcon>
                     <FavoriteIcon />
                 </ListItemIcon>
                 <ListItemText primary="Liked Tasks" />
+            </ListItemButton>
+            </Link>
+        </Tooltip>
+        <Tooltip title="Disliked Tasks">
+            <Link to="/disliked_tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <ListItemButton>
+                <ListItemIcon>
+                    <ThumbDownIcon />
+                </ListItemIcon>
+                <ListItemText primary="Disliked Tasks" />
             </ListItemButton>
             </Link>
         </Tooltip>
@@ -174,7 +183,7 @@ export const MainListItemsEmployee = () => {
 export const SecondaryListItemsEmployee = () => {
     return(
         <>
-        <Tooltip title="Created Tags">
+        <Tooltip title="All Tags">
             <Link to="/created_property_tags" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton>
                 <ListItemIcon>
@@ -185,12 +194,22 @@ export const SecondaryListItemsEmployee = () => {
             </Link>
         </Tooltip>
         <Tooltip title="Interested Tags">
-            <Link to="/interested_tags" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link to="/interested_property_tags" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton>
                 <ListItemIcon>
                     <StarIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Interestd Property Tags" />
+            </ListItemButton>
+            </Link>
+        </Tooltip>
+        <Tooltip title="Uninterested Tags">
+            <Link to="/uninterested_property_tags" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <ListItemButton>
+                <ListItemIcon>
+                    <NotInterestedIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Uninterestd Property Tags" />
             </ListItemButton>
             </Link>
         </Tooltip>

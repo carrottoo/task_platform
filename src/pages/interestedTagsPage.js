@@ -1,14 +1,16 @@
-import Dashboard from '../components/dashboardEmployer';
-import DashboardEmployee from '../components/dashboardEmployee';
+import Dashboard from '../components/dashboard';
+import GeneralTagComponent from "../components/generalTagComponent";
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../components/theme';
-import SubmittedTasks from '../components/submittedTasks';
 import { Typography, Box} from '@mui/material';
 
-export default function TasksToReviewPage(){
+
+export default function InterestedPropertyPage(){
     const storedData = JSON.parse(localStorage.getItem("userData"));
     const userProfile = storedData ? storedData.profile : null;
+    const filterCriteria = (property) => property.is_interested === true;
 
+    
     if (!userProfile){
         return (
             <ThemeProvider theme={theme}>
@@ -19,22 +21,20 @@ export default function TasksToReviewPage(){
         )
     }
 
-    if (userProfile === 'employer'){
 
-        return (
-            <ThemeProvider theme={theme}>
-                <Dashboard>
-                    <SubmittedTasks/>
-                </Dashboard>
-            </ThemeProvider>
-        )
-    }else{
-        return(
-            <ThemeProvider theme={theme}>
-            <DashboardEmployee>
-                <SubmittedTasks/>
-            </DashboardEmployee>
+    return (
+        <ThemeProvider theme={theme}>
+            <Dashboard>
+                {/* <FilteredProperties
+                    is_interested={true}
+                /> */}
+                <GeneralTagComponent
+                    isProperty={false}
+                    filter={true}
+                    filterCriteria={filterCriteria}
+                />
+            </Dashboard>
         </ThemeProvider>
-        )
-    }
+    )
+
 }

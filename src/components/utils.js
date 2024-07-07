@@ -1,12 +1,10 @@
-
-
-export default async function callApi(url, method = 'GET', body = null) {
-    const storedData = JSON.parse(localStorage.getItem('userData') || '{}'); 
-    const token = storedData?.token; 
+export default async function callApi(token, url, method = 'GET', body = null) {
+    // const storedData = JSON.parse(localStorage.getItem('userData') || '{}'); 
+    // const token = storedData?.token; 
  
-    if (!token) { 
-        return {error: 'Session expired, please sign in again.' }; 
-    }
+    // if (!token) { 
+    //     return {error: 'Session expired, please sign in again.' }; 
+    // }
   
     try {
       const response = await fetch(url, {
@@ -18,20 +16,28 @@ export default async function callApi(url, method = 'GET', body = null) {
             body: body ? JSON.stringify(body) : null
         });
 
+        if (method === 'DELETE' && response.status === 204) {
+            return { ok: 'Delete successful' }; // Successful DELETE
+        }
+
+
         const data = await response.json();
   
         if (!response.ok) {
-            
-            if (method === 'GET' && (response.status === 401 || response.status === 403)) {
-                return {'error': 'Session expired, please sign in again.' }; 
-            }
 
             if (response.status === 401){
-                return {'error': 'Session expired, please sign in again.' }; 
-
+                return {'sessionExpired': 'Session expired, please sign in again.' }; 
             }
 
-            const errors = data.errors; 
+            if (response.status === 403 && !data.errors){
+                return {'permissionDenied': 'You do not have the permission for the action requested.'}
+            }
+
+            if (response.status === 404){
+                return {'notFound': 'The requested object cannot be found.'}
+            }
+
+            const errors = data.errors? data.errors : data.error; 
             const errorCount = data.error_count;
 
             if (errorCount && errorCount !== 1){
@@ -52,7 +58,6 @@ export default async function callApi(url, method = 'GET', body = null) {
         return { 'error' : error.message || 'An error occurred.' }; 
     }
   }
-  
 
   export const formatTaskData = (taskData, taskMapping) => {
     return taskData.map((task, index) => {

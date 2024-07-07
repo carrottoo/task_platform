@@ -1,8 +1,7 @@
-import Dashboard from '../components/dashboardEmployer';
-import DashboardEmployee from '../components/dashboardEmployee';
+import Dashboard from '../components/dashboard';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../components/theme';
-import CreatedTasks from '../components/allTasks';
+import AllTasks from '../components/allTasks';
 import { Typography, Box} from '@mui/material';
 
 export default function CreatedTasksPage(){
@@ -19,27 +18,13 @@ export default function CreatedTasksPage(){
         )
     }     
     
-    if (userProfile === 'employer'){
-        return (
-            <ThemeProvider theme={theme}>
-                <Dashboard>
-                    <CreatedTasks/>
-                </Dashboard>
-            
-            </ThemeProvider>
-        )
-    }else{
-        return (
-            <ThemeProvider theme={theme}>
-                <DashboardEmployee>
-                    <CreatedTasks />
-                </DashboardEmployee>
-            </ThemeProvider>
-        )
-
-
-    }
-
-    
-
+   
+    return (
+        <ThemeProvider theme={theme}>
+            <Dashboard>
+                <AllTasks/>
+            </Dashboard>
+        
+        </ThemeProvider>
+    )
 }
