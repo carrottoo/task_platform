@@ -80,6 +80,7 @@ export async function deleteObject(token, baseUrl, objectId,
 
     } catch (error) {
         setAlertMessage(error.message? error.message : alternativeErrorMessage);
+        setAlertSeverity('error');
         setShowAlert(true);
     }
 
@@ -107,10 +108,10 @@ export async function isTaskUnassigned(token, task) {
 }
 
 
-export async function patchingTask (token, task, body, field, errorMessage, successMessage, setSessionExpiredOpen,
-    setAlertMessage, setAlertSeverity, setShowAlert) {
+export async function patchingTask (patchUrl, token,  body, field, errorMessage, successMessage, setSessionExpiredOpen,
+    setAlertMessage, setAlertSeverity, setShowAlert, navigate) {
 
-    const patchUrl = config.API_BASE_URL + "/tasks/" + task.id + '/';
+    // const patchUrl = config.API_BASE_URL + "/tasks/" + task.id + '/';
 
     try{
         const result = await callApi(token, patchUrl, 'PATCH', body)
@@ -131,6 +132,10 @@ export async function patchingTask (token, task, body, field, errorMessage, succ
         setAlertMessage(successMessage)
         setAlertSeverity('success');
         setShowAlert(true);
+
+        setTimeout(() => {
+            navigate(0); // Reload the current page
+            }, 500);
 
     } catch(error) {
         const message = error.message || errorMessage

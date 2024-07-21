@@ -158,6 +158,7 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
     }
 
     const handleApprove = async (task) => {
+        const patchUrl = config.API_BASE_URL + "/tasks/" + task.id + '/';
         const body = {
             'is_approved': true
         }
@@ -167,8 +168,8 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
         const successMessage = 'Task has been approved successfully!';
 
         patchingTask(
-            token,
-            task, 
+            patchUrl,
+            token, 
             body,
             field,
             errorMessage,
@@ -176,11 +177,15 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
             setSessionExpiredOpen,
             setAlertMessage,
             setAlertSeverity,
-            setShowAlert
+            setShowAlert,
+            navigate
         );
+
     };
 
     const handleAssign = async (task) => {
+
+        const patchUrl = config.API_BASE_URL + "/tasks/" + task.id + '/';
 
         const body = {
             'assignee': userID
@@ -191,8 +196,8 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
         const successMessage = 'Task has been assigned to you successfully!';
 
         patchingTask(
-            token,
-            task, 
+            patchUrl,
+            token, 
             body,
             field,
             errorMessage,
@@ -200,7 +205,8 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
             setSessionExpiredOpen,
             setAlertMessage,
             setAlertSeverity,
-            setShowAlert
+            setShowAlert,
+            navigate
         );
     };
 
@@ -218,13 +224,15 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
             'assignee': null
         }
 
+        const patchUrl = config.API_BASE_URL + "/tasks/" + task.id + '/';
+
         const field = 'assignee';
         const errorMessage = 'Error in unassigning yourself from this task';
         const successMessage = 'You have successfully unassigned yourself from this task';
 
         patchingTask(
+            patchUrl,
             token,
-            task, 
             body,
             field,
             errorMessage,
@@ -232,11 +240,13 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
             setSessionExpiredOpen,
             setAlertMessage,
             setAlertSeverity,
-            setShowAlert
+            setShowAlert,
+            navigate
         );
     };
 
     const handleSubmit = async (task) => {
+        const patchUrl = config.API_BASE_URL + "/tasks/" + task.id + '/';
         const body = {
             'is_submitted': true
         };
@@ -246,8 +256,8 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
         const sucessMessage = 'Task has been submitted successfully!';
 
         patchingTask(
-            token,
-            task, 
+            patchUrl,
+            token, 
             body, 
             field, 
             errorMessage, 
@@ -255,7 +265,8 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
             setSessionExpiredOpen,
             setAlertMessage,
             setAlertSeverity, 
-            setShowAlert
+            setShowAlert,
+            navigate
         );
     };
 

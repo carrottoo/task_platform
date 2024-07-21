@@ -7,6 +7,7 @@ import DateCard from '../components/dateCard'
 import TaskCards from '../components/TaskCards';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import PropertyCard from '../components/propertyCard';
+import { RecommendedTasks } from '../components/recommendedTasks';
 
 export default function EmployeeMainPage() {
     const storedData = JSON.parse(localStorage.getItem('userData'));
@@ -33,10 +34,10 @@ export default function EmployeeMainPage() {
                             <DateCard />
                         </Grid>
                         <Grid item xs={12}>
-                       
+                            <Divider variant="middle" />  {/* or use variant="fullWidth" for a full-width line */}
                         </Grid>
                         <Grid item xs={12}>
-                            <Divider variant="middle" />  {/* or use variant="fullWidth" for a full-width line */}
+                            <RecommendedTasks/>
                         </Grid>
                         <Grid item xs={12}>
                           
