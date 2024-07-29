@@ -10,13 +10,14 @@ import RightPositionedTimeline from '../components/processTimeline';
 import CardContent from '@mui/material/CardContent';
 import GroupsIcon from '@mui/icons-material/Groups';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import backgroundImage from '../assets/cloudy_evening.JPG';
 
 
 const mainFeaturedPost = {
     title: 'A New Way To Tackle With Your Tasks',
     description:
       "Start your task outsourcing and co-working simply by joining our platform. Fast, easy, personalized and efficient!",
-    image:  'https://source.unsplash.com/random?wallpapers',
+    image:  `${backgroundImage}`,
     imageText: 'main image description',
   };
 

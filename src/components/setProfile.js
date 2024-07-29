@@ -11,7 +11,6 @@ import {ThemeProvider} from '@mui/material/styles';
 
 
 function SetProfile(){
-    const [isEmployer, setIsEmployer] = useState(false)
     const apiUrl = config.API_BASE_URL + '/user_profiles/';
 
     const storedData = JSON.parse(localStorage.getItem('userData'));
@@ -23,7 +22,6 @@ function SetProfile(){
 
 
     const handleEmployer = async () => {
-        setIsEmployer(true);
 
         if (!token) {
             console.error('No token found');
@@ -43,7 +41,7 @@ function SetProfile(){
                 },
                 body: JSON.stringify({
                     'user': storedData.userID,
-                    'is_employer': isEmployer
+                    'is_employer': true
                 })
             })
 
@@ -86,7 +84,6 @@ function SetProfile(){
     }
 
     const handleEmployee = async () => {
-        setIsEmployer(false);
 
         if (!token) {
             console.error('No token found');
@@ -106,7 +103,7 @@ function SetProfile(){
                 },
                 body: JSON.stringify({
                     'user': storedData.userID,
-                    'is_employer': isEmployer
+                    'is_employer': false
                 })
             })
 
