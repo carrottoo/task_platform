@@ -29,6 +29,7 @@ export default function InterestedPropertyPage(){
                     is_interested={true}
                 /> */}
                 <GeneralTagComponent
+                    title={'Interested Task Property Tags'}
                     isProperty={false}
                     filter={true}
                     filterCriteria={filterCriteria}

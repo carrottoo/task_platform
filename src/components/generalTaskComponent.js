@@ -9,6 +9,7 @@ import config from "../config/config";
 import CancelIcon from '@mui/icons-material/Cancel';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import PublishIcon from '@mui/icons-material/Publish';
+import PentagonIcon from '@mui/icons-material/Pentagon';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
@@ -16,11 +17,12 @@ import { useNavigate } from 'react-router-dom';
 import { patchingTask, listRetrival, deleteObject, setLikeStatus, isTaskUnassigned} from "./apiService";
 import callApi, { formatTaskData } from "./utils";
 import { taskMapping } from "./mapping";
+import SetTaskPropertyDialog from "./setTaskProperty";
 
 export default function GeneralTaskComponent({headCells, cellContents, heading, noContentMessage,
     renderApprove = false, renderSubmit = false, renderUnassign = false, renderAssign = false, 
-    renderLike = false, renderDislike = false, filter = true, filterCriteria = null, selectable=true,
-    isUserBehavior=false}) {
+    renderLike = false, renderDislike = false, renderSetProperty = false, filter = true, filterCriteria = null, selectable=true,
+    isUserBehavior=false, fetchProperties=false}) {
         
     const storedData = JSON.parse(localStorage.getItem("userData"));
     const userID = storedData ? storedData.userID : null;
@@ -33,10 +35,13 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
     const [error, setError] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
+    const [openPropertyDialog, setOpenPropertyDialog] = useState(false);
 
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertSeverity, setAlertSeverity] = useState('error');
+
+    const [currentProperties, setCurrentProperties] = useState('');
 
     useEffect( () => {
         if (!isUserBehavior){
@@ -54,6 +59,35 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
         }
 
     }, [userID, filterCriteria, isUserBehavior])
+
+    useEffect(() => {
+        if (fetchProperties) {
+            const fetchProperties = async () => {
+                const apiUrl = `${config.API_BASE_URL}/properties/`;
+                try {
+                    const properties = await listRetrival(
+                    token,
+                    apiUrl,
+                    'property',
+                    sessionExpiredOpen,
+                    setError,
+                    setLoading, 
+                    filterCriteria
+                    );
+                
+                    // Extract property names and ids as tuples and store them in currentProperties
+                    const propertyTuples = properties.map(property => [property.name, property.id]);
+                    setCurrentProperties(propertyTuples);
+                } catch (error) {
+                    setError(error.message || 'Error in setting up the task property');
+                } 
+            };
+
+            if (userID) {
+            fetchProperties();
+            }
+        }
+    }, [userID, fetchProperties]);
 
     useEffect( () => {
         if (isUserBehavior){
@@ -324,6 +358,11 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
         );
     }
 
+    const handleTagProperty = async (task) => {
+        setSelectedTask(task);
+        setOpenPropertyDialog(true);
+    }
+
     const renderActions = (row) => {
         return (
             <>
@@ -374,6 +413,13 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
                         </IconButton>
                     </Tooltip>
                 )}
+                {renderSetProperty && (
+                    <Tooltip title="Link taks property">
+                        <IconButton onClick={() => handleTagProperty(row)}>
+                            <PentagonIcon/>
+                        </IconButton>
+                    </Tooltip>
+                )}
                 {isUserBehavior && (
                     <Tooltip title = "Delete">
                         <IconButton onClick={() => handleUserBehaviorDelete(row)}>
@@ -387,6 +433,10 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
+    };
+
+    const handleClosePropertyDialog = () => {
+        setOpenPropertyDialog(false)
     };
     
     const handleSessionExpiredDialogClose = () =>{
@@ -432,6 +482,7 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
               selectable={selectable} // Pass the prop to enable/disable checkboxes
             />
             {selectedTask && <DetailsDialog task={selectedTask} open={openDialog} onClose={handleCloseDialog} title='Task Details' />}
+            {selectedTask && <SetTaskPropertyDialog task={selectedTask} currentProperties = {currentProperties} open={openPropertyDialog} onClose={handleClosePropertyDialog}></SetTaskPropertyDialog>}
           </Box>
           <SessionExpiredDialog open={sessionExpiredOpen} onClose={handleSessionExpiredDialogClose} />
         </Box>

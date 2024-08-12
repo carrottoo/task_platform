@@ -25,6 +25,7 @@ export default function UninterestedPropertyPage(){
         <ThemeProvider theme={theme}>
             <Dashboard>
                 <GeneralTagComponent
+                    title = {'Uninterested Task Property Tags'}
                     isProperty={false}
                     filter={true}
                     filterCriteria={filterCriteria}

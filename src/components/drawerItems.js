@@ -78,7 +78,7 @@ export const MainListItems = () => {
                 <ListItemIcon>
                     <HistoryIcon />
                 </ListItemIcon>
-                <ListItemText primary="Tasks to Review" />
+                <ListItemText primary="Tasks Approved" />
             </ListItemButton>
             </Link>
         </Tooltip>

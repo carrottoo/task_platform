@@ -31,6 +31,7 @@ function SignIn() {
     const handleChange = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });
         setUsernameError('');
+        setPasswordError('');
         setShowAlert(false);
     }
 

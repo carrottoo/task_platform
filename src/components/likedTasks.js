@@ -36,7 +36,7 @@ export default function LikedTasks(){
         <GeneralTaskComponent 
             filterCriteria={filterCriteria}
             noContentMessage={noContentMessage}
-            heading = 'Like Tasks'
+            heading = 'Liked Tasks'
             headCells={headCells}
             cellContents={cellContents}
             selectable={false}

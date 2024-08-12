@@ -20,7 +20,6 @@ function SetProfile(){
     const [alertMessage, setAlertMessage] = useState('');
     const [alertSeverity, setAlertSeverity] = useState('error');
 
-
     const handleEmployer = async () => {
 
         if (!token) {
@@ -46,6 +45,7 @@ function SetProfile(){
             })
 
             const data = await response.json();
+            console.log(data)
 
             if (response.ok) {
                 console.log('Profile set successfully:', data);
@@ -55,20 +55,17 @@ function SetProfile(){
 
                 const updatedData = { 
                     ...storedData, 
-                    profile: data.isEmployer? 'employer' : 'employee '
-                  };
+                    profile: 'employer'
+                }
                 
                 localStorage.setItem("userData", JSON.stringify(updatedData));
 
-                if (data.isEmployer){
-                    setTimeout(() => {
-                        window.location.href = '/employer';
-                    }, 1000); // 1000 milliseconds = 1 seconds
-                }else{
-                    setTimeout(() => {
-                        window.location.href = '/employee';
-                    }, 1000); // 1000 milliseconds = 1 seconds
-                }
+                console.log(updatedData)
+
+                setTimeout(() => {
+                    window.location.href = '/employer';
+                }, 1000); // 1000 milliseconds = 1 seconds
+            
 
             } else {
                 setAlertMessage(data.errors.user.message || data.detail.message || 'Failed to set profile')
@@ -115,6 +112,20 @@ function SetProfile(){
                 setAlertSeverity('success');
                 setShowAlert(true);
 
+
+                const updatedData = { 
+                    ...storedData, 
+                    profile: 'employee'
+                }
+                
+                localStorage.setItem("userData", JSON.stringify(updatedData));
+
+                console.log(updatedData)
+
+                setTimeout(() => {
+                    window.location.href = '/employee';
+                }, 1000); // 1000 milliseconds = 1 seconds
+                
             } else {
                 setAlertMessage(data.errors.user.message || data.detail.message || 'Failed to set profile')
                 setShowAlert(true)

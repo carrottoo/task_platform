@@ -37,8 +37,10 @@ export default function AllTasks() {
     let renderAssign;
     let renderUnassign;
     let renderLike;
-    let renderDislike
+    let renderDislike;
+    let renderSetProperty;
     let selectable;
+    let fetchProperties;
 
     if (userProfile === 'employer'){
         heading = 'Created Tasks'
@@ -46,14 +48,18 @@ export default function AllTasks() {
         renderUnassign = false;
         renderLike = false;
         renderDislike = false;
+        renderSetProperty = true;
         selectable = true;
+        fetchProperties = true;
     } else {
         heading = 'All Available Tasks'
         renderAssign = true;
         renderUnassign = true;
         renderLike = true;
         renderDislike = true;
+        renderSetProperty = false;
         selectable = false;
+        fetchProperties = false;
     }
 
     return (
@@ -66,8 +72,10 @@ export default function AllTasks() {
         renderUnassign={renderUnassign}
         renderLike={renderLike}
         renderDislike={renderDislike}
+        renderSetProperty={renderSetProperty}
         selectable={selectable}
         filter={false}
+        fetchProperties={fetchProperties}
     />
     );
 }

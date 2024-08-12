@@ -2,46 +2,122 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
-import { useNavigate, Link } from 'react-router-dom';
+import { listRetrival } from './apiService';
 import config from '../config/config';
+import { Typography } from '@mui/material';
 
 
-export default function SetTaskProperty(props){
-    const [values, setValues] = useState({
-        task: '',
-        propertyName: '',
-    })
-
+export default function SetTaskPropertyDialog({ task, currentProperties, open, onClose}) {
+    const [propertyName, setPropertyName] = useState('');
+    const [error, setError] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertSeverity, setAlertSeverity] = useState('error');
+    const [openTaskPropertyDialog, setOpenTaskPropertyDialog] = useState(false);
 
-    const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
-        // setErrors({ ...errors, [prop]: ''});
-        setShowAlert(false);
+    const handleInputChange = (event) => {
+        setPropertyName(event.target.value);
+        setError('');
     };
 
     const storedData = JSON.parse(localStorage.getItem('userData'));
     const token = storedData ? storedData.token : null;
 
     const handleClose = () => {
-        setValues(''); // Reset values to their initial state
-        // setErrors({}); 
+        setPropertyName(''); // Reset values to their initial state
+        setError('');
         setShowAlert(false);
-        props.setOpen(false);
+        onClose(); // Close the dialog
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSave = async () => {
 
-        const taskUrl = config.API_BASE_URL + '/task_properties/';
-        const {task, property} = values;
+        if (propertyName.trim() === '') {
+            setError('The field is required');
+            return; // Prevent further execution if empty
+          }
+          
+        const propertyLower = propertyName.toLowerCase();
 
-    }
+        // Find the tuple where the name matches the propertyLower
+        const matchedProperty = currentProperties.find(([name, id]) => name.toLowerCase() === propertyLower);
 
+        if (matchedProperty) {
+            const [, propertyId] = matchedProperty; // Destructure to get the property id
+
+            const apiUrl = `${config.API_BASE_URL}/task_properties/`;
+            const body = {
+                'task': task.id,
+                'property': propertyId, // Use the matched property ID
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body) // Serialize the body as JSON
+                });
+
+                if (response.ok) {
+                    setAlertSeverity('success');
+                    setAlertMessage('Task linked to the given property successfully!');
+                    setShowAlert(true);
+                } else {
+                    setError('Error in setting up the task properties.');
+                }
+
+            } catch (error) {
+                setError('Error in setting up the task properties.');
+            }
+        } else {
+            setError(`Property "${propertyName}" does not exist. Please create it first!`);
+        }
+    };
+
+    return (
+        <Dialog open={open} onClose={handleClose}>
+            {showAlert && (
+                <Alert
+                    severity={alertSeverity}
+                    onClose={() => setShowAlert(false)}
+                >
+                    {alertMessage}
+                </Alert>
+            )}
+            <DialogTitle>Set Up Task Property</DialogTitle>
+            <DialogContent>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    label="Task Property Name"
+                    type="text"
+                    required
+                    variant="standard"
+                    fullWidth
+                    value={propertyName}
+                    onChange={handleInputChange}
+                />
+                {error && (
+                    <Typography color="error" variant="body2">
+                        {error}
+                    </Typography>
+                )}
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={handleSave} color="primary">
+                    Save
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 }

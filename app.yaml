@@ -1,6 +1,9 @@
 runtime: nodejs20
 service: frontend
 
+# env_variables:
+#   REACT_APP_CONFIG_ENV: 'production'
+
 handlers:
   - url: /(.*\.(js|css|png|JPG|jpg|svg|ico|json|woff2?))
     static_files: build/\1

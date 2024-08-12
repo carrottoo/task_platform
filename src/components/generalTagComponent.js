@@ -12,7 +12,7 @@ import callApi from "./utils";
 import { isLabelWithInternallyDisabledControl } from "@testing-library/user-event/dist/utils";
 
 
-export default function GeneralTagComponent({isProperty=true, filter=false, filterCriteria=null}) {
+export default function GeneralTagComponent({title, isProperty=true, filter=false, filterCriteria=null}) {
     const storedData = JSON.parse(localStorage.getItem("userData"));
     const userID = storedData ? storedData.userID : null;
     const token = storedData ? storedData.token : null; 
@@ -214,7 +214,7 @@ export default function GeneralTagComponent({isProperty=true, filter=false, filt
                         color: '#3B3B3B'
                     }}
             >
-                Created Task Property Tags
+                {title}
             </Typography>
             <Box
                 sx={{
