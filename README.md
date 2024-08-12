@@ -6,6 +6,9 @@ An interactive role-based web platform for users to outsource, take and manage t
 
 This app is deployed on Google Cloud
 
+## User Instruction 
+[User manual](https://github.com/carrottoo/task_platform/blob/main/doc/User%20Manual.pdf)
+
 
 ## Examples
 
