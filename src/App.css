@@ -51,14 +51,13 @@
 
 .greeting-text {
   margin-bottom: 20px;
-  color: #d3cccb; 
-  font-size: calc(15px + 1.5vw); 
-  font-family: "Jersey 10", sans-serif; 
+  color: #d3cccb;
+  font-size: calc(15px + 1.5vw);
+  font-family: "Jersey 10", sans-serif;
 }
 
 .link {
   /* color: #A3B3B7; */
   /* color: #80B6C6; */
-  color: #68AABE;
+  color: #68aabe;
 }
-

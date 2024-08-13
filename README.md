@@ -6,9 +6,9 @@ An interactive role-based web platform for users to outsource, take and manage t
 
 This app is deployed on Google Cloud
 
-## User Instruction 
-[User manual](https://github.com/carrottoo/task_platform/blob/main/doc/User%20Manual.pdf)
+## User Instruction
 
+[User manual](https://github.com/carrottoo/task_platform/blob/main/doc/User%20Manual.pdf)
 
 ## Examples
 
@@ -16,20 +16,22 @@ Homepage (staging)
 
 ![Homepage](./media/homepage_staging.png)
 
-
 ## Try yourself
 
 ### To run in dev
+
 ```
 npm start
 ```
 
 ### To run in production
+
 ```
 npm run build , npx serve -s build
 ```
 
-### To run test 
+### To run test
+
 ```
 npm test
 ```
