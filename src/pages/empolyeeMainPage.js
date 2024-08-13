@@ -4,9 +4,7 @@ import theme from "../components/theme";
 import { Container, Grid, Typography, Divider } from "@mui/material";
 import Dashboard from "../components/dashboard";
 import DateCard from "../components/dateCard";
-import TaskCards from "../components/TaskCards";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
-import PropertyCard from "../components/propertyCard";
 import { RecommendedTasks } from "../components/recommendedTasks";
 
 export default function EmployeeMainPage() {

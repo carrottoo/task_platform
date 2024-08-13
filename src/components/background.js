@@ -46,7 +46,7 @@ const FallingSquares = () => {
       [90, 159, 244],
       [255, 255, 255],
     ];
-    var rotations = [];
+    // var rotations = [];
     for (let i = 0; i < particles; i++) {
       positions.push(2 * (Math.random() * 2 - 1) * 500);
       positions.push((Math.random() * 2 - 1) * 500);
@@ -55,9 +55,9 @@ const FallingSquares = () => {
       //color.setHSL(i / particles, 1.0, 0.6);  // Rainbow colors
       //colors.push(color.b, color.g, color.g);
 
-      const scale = Math.random() * 0.5 + 0.5;
+      // const scale = Math.random() * 0.5 + 0.5;
       sizes.push(1.0);
-      const green = (Math.random() * 0.5 + 0.2) * scale;
+      // const green = (Math.random() * 0.5 + 0.2) * scale;
       //const color = new THREE.Color((Math.random() * 0.8 + 0.2) * scale, green, (1 - green) * (Math.random()));
       const rgb_color = color_palette[i % color_palette.length];
       const color = new THREE.Color(

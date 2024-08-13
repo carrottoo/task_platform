@@ -9,6 +9,7 @@ import {
   Button,
   Stack,
 } from "@mui/material";
+import PropTypes from "prop-types";
 
 const DetailsDialog = ({ task, open, onClose, title }) => {
   return (
@@ -41,6 +42,13 @@ const DetailsDialog = ({ task, open, onClose, title }) => {
       </DialogActions>
     </Dialog>
   );
+};
+
+DetailsDialog.propTypes = {
+  task: PropTypes.object.isRequired,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 export default DetailsDialog;

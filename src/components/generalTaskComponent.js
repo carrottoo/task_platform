@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import {
   Box,
   CircularProgress,
@@ -89,7 +90,7 @@ export default function GeneralTaskComponent({
         fetchTasks();
       }
     }
-  }, [userID, filterCriteria, isUserBehavior]);
+  }, [userID, filter, filterCriteria, token, isUserBehavior]);
 
   useEffect(() => {
     if (fetchProperties) {
@@ -121,7 +122,7 @@ export default function GeneralTaskComponent({
         fetchProperties();
       }
     }
-  }, [userID, fetchProperties]);
+  }, [userID, fetchProperties, filterCriteria, sessionExpiredOpen, token]);
 
   useEffect(() => {
     if (isUserBehavior) {
@@ -169,7 +170,14 @@ export default function GeneralTaskComponent({
         fetchUserBehaviors();
       }
     }
-  }, [userID, filterCriteria, isUserBehavior]);
+  }, [
+    userID,
+    filterCriteria,
+    filter,
+    sessionExpiredOpen,
+    token,
+    isUserBehavior,
+  ]);
 
   const handleDetail = (task) => {
     setSelectedTask(task);
@@ -541,3 +549,29 @@ export default function GeneralTaskComponent({
     </Box>
   );
 }
+
+GeneralTaskComponent.propTypes = {
+  headCells: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      numeric: PropTypes.bool,
+      disablePadding: PropTypes.bool,
+    }),
+  ).isRequired, // An array of objects defining the columns for the table
+  cellContents: PropTypes.func.isRequired, // A function to render the contents of each cell
+  heading: PropTypes.string.isRequired, // A string representing the heading of the component
+  noContentMessage: PropTypes.string.isRequired, // A string to display when there is no content
+  renderApprove: PropTypes.bool, // A boolean to determine if the approve action should be rendered
+  renderSubmit: PropTypes.bool, // A boolean to determine if the submit action should be rendered
+  renderUnassign: PropTypes.bool, // A boolean to determine if the unassign action should be rendered
+  renderAssign: PropTypes.bool, // A boolean to determine if the assign action should be rendered
+  renderLike: PropTypes.bool, // A boolean to determine if the like action should be rendered
+  renderDislike: PropTypes.bool, // A boolean to determine if the dislike action should be rendered
+  renderSetProperty: PropTypes.bool, // A boolean to determine if the set property action should be rendered
+  filter: PropTypes.bool, // A boolean to determine if filtering should be applied
+  filterCriteria: PropTypes.object, // An object defining the criteria for filtering
+  selectable: PropTypes.bool, // A boolean to determine if rows are selectable
+  isUserBehavior: PropTypes.bool, // A boolean to determine if the component is handling user behaviors
+  fetchProperties: PropTypes.bool, // A boolean to determine if properties should be fetched
+};

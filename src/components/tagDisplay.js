@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import {
   Typography,
   Pagination,
@@ -116,6 +117,19 @@ export function CardDisplay({
   );
 }
 
+CardDisplay.propTypes = {
+  tags: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
+  ).isRequired, // Array of tag objects
+  onDeleteTag: PropTypes.func.isRequired, // Function to handle deleting a tag
+  onLikeTag: PropTypes.func.isRequired, // Function to handle liking a tag
+  onDislikeTag: PropTypes.func.isRequired, // Function to handle disliking a tag
+  isEditing: PropTypes.bool.isRequired, // Boolean to determine if editing mode is active
+};
+
 export function ChipDisplay({ tags, onDeleteTag, isEditing }) {
   const [currentPage, setCurrentPage] = useState(1);
   const tagsPerPage = 15; // Adjust the number of tags per page
@@ -124,9 +138,6 @@ export function ChipDisplay({ tags, onDeleteTag, isEditing }) {
   const indexOfFirstTag = indexOfLastTag - tagsPerPage;
   const currentTags = tags.slice(indexOfFirstTag, indexOfLastTag);
   const totalPages = Math.ceil(tags.length / tagsPerPage);
-
-  const storedData = JSON.parse(localStorage.getItem("userData"));
-  const userProfile = storedData ? storedData.profile : null;
 
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
@@ -157,3 +168,14 @@ export function ChipDisplay({ tags, onDeleteTag, isEditing }) {
     </Grid>
   );
 }
+
+ChipDisplay.propTypes = {
+  tags: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
+  ).isRequired, // Array of tag objects
+  onDeleteTag: PropTypes.func.isRequired, // Function to handle deleting a tag
+  isEditing: PropTypes.bool.isRequired, // Boolean to determine if editing mode is active
+};

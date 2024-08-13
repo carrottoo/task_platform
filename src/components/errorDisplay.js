@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Box, Typography, Button } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 
@@ -32,3 +33,8 @@ export default function ErrorDisplay({ errorMessage, onRetry }) {
     </Box>
   );
 }
+
+ErrorDisplay.propTypes = {
+  errorMessage: PropTypes.string.isRequired,
+  onRetry: PropTypes.func,
+};

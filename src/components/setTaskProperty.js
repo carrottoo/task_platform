@@ -2,12 +2,12 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
-import { listRetrival } from "./apiService";
 import config from "../config/config";
+import PropTypes from "prop-types";
 import { Typography } from "@mui/material";
 
 export default function SetTaskPropertyDialog({
@@ -21,7 +21,6 @@ export default function SetTaskPropertyDialog({
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("error");
-  const [openTaskPropertyDialog, setOpenTaskPropertyDialog] = useState(false);
 
   const handleInputChange = (event) => {
     setPropertyName(event.target.value);
@@ -124,3 +123,16 @@ export default function SetTaskPropertyDialog({
     </Dialog>
   );
 }
+
+SetTaskPropertyDialog.propTypes = {
+  task: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  }).isRequired,
+  currentProperties: PropTypes.arrayOf(
+    PropTypes.arrayOf(
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    ),
+  ).isRequired,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+};

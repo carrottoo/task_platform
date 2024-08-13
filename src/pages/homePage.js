@@ -2,19 +2,7 @@ import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Header from "../components/header";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import {
-  Paper,
-  Typography,
-  Card,
-  Box,
-  TextField,
-  Button,
-  Grid,
-  Switch,
-  FormControlLabel,
-  Stack,
-  Icon,
-} from "@mui/material";
+import { Typography, Card, Box, Grid, Stack } from "@mui/material";
 import Container from "@mui/material/Container";
 import MainFeaturedPost from "../components/featurePost";
 import Divider from "@mui/material/Divider";

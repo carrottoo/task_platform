@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -24,11 +25,15 @@ const SessionExpiredDialog = ({ open, onClose }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleSignIn}>Sign In</Button> // Use handleSignIn on
-        button click
+        <Button onClick={handleSignIn}>Sign In</Button>
       </DialogActions>
     </Dialog>
   );
+};
+
+SessionExpiredDialog.propTypes = {
+  open: PropTypes.bool.isRequired, // open is a required boolean
+  onClose: PropTypes.func.isRequired, // onClose is a required function
 };
 
 export default SessionExpiredDialog;

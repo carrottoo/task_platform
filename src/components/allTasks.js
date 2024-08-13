@@ -53,7 +53,6 @@ const cellContents = (row, labelId, hideIdColumn) => (
 
 export default function AllTasks() {
   const storedData = JSON.parse(localStorage.getItem("userData"));
-  const userID = storedData ? storedData.userID : null;
   const userProfile = storedData ? storedData.profile : null;
 
   const noContentMessage = "No task has been created";

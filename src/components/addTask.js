@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import { useNavigate, Link } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import config from "../config/config";
+import PropTypes from "prop-types";
 
 function AddTask(props) {
   const [values, setValues] = useState({
@@ -228,5 +229,10 @@ function AddTask(props) {
     </Dialog>
   );
 }
+
+AddTask.propTypes = {
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
+};
 
 export default AddTask;

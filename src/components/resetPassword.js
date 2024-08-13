@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import {
   Dialog,
   DialogTitle,
@@ -106,3 +107,8 @@ export default function ResetPasswordDialog({ open, onClose }) {
     </Dialog>
   );
 }
+
+ResetPasswordDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+};

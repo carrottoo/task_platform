@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import {
   Box,
   CircularProgress,
@@ -14,7 +15,6 @@ import SessionExpiredDialog from "./sessionExpiredDialog";
 import { useNavigate } from "react-router-dom";
 import config from "../config/config";
 import callApi from "./utils";
-import { isLabelWithInternallyDisabledControl } from "@testing-library/user-event/dist/utils";
 
 export default function GeneralTagComponent({
   title,
@@ -57,7 +57,7 @@ export default function GeneralTagComponent({
         fetchProperties();
       }
     }
-  }, [userID, filterCriteria, isProperty]);
+  }, [userID, filter, sessionExpiredOpen, token, filterCriteria, isProperty]);
 
   useEffect(() => {
     if (!isProperty) {
@@ -102,7 +102,7 @@ export default function GeneralTagComponent({
         fetchUserProperties();
       }
     }
-  }, [userID, filterCriteria, isProperty]);
+  }, [userID, filter, filterCriteria, sessionExpiredOpen, token, isProperty]);
 
   const navigate = useNavigate();
 
@@ -296,3 +296,10 @@ export default function GeneralTagComponent({
     </>
   );
 }
+
+GeneralTagComponent.propTypes = {
+  title: PropTypes.string.isRequired,
+  isProperty: PropTypes.bool,
+  filter: PropTypes.bool,
+  filterCriteria: PropTypes.object,
+};

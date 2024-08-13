@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import { useNavigate, Link } from "react-router-dom";
 import config from "../config/config";
+import PropTypes from "prop-types";
 
 function AddTag(props) {
   //const [open, setOpen] = useState(false);
@@ -148,5 +149,10 @@ function AddTag(props) {
     </Dialog>
   );
 }
+
+AddTag.propTypes = {
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
+};
 
 export default AddTag;

@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Paper,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-  Switch,
-  FormControlLabel,
-} from "@mui/material";
+import { Paper, Typography, TextField, Button, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import backgroundImage from "../assets/background.JPG";
@@ -31,8 +23,6 @@ function SignUp() {
     firstName: "",
     lastName: "",
   });
-
-  // const [isEmployer, setIsEmployer] = useState(false);
 
   const [errors, setErrors] = useState({
     username: "",
@@ -119,13 +109,9 @@ function SignUp() {
           lastName: "",
         });
       } else {
-        // console.log(data['errors'])
         const responseErrors = data.errors;
         const errorCount = data.error_count;
-        // console.log("errors username content: ")
-        // console.log(errors['username'])
-        // console.log(errors['password'])
-        // console.log(errorCount)
+
         if (errorCount !== 1) {
           const combinedErrors = {};
           for (const field in responseErrors) {

@@ -24,6 +24,24 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { visuallyHidden } from "@mui/utils";
 import { getComparator, stableSort } from "./comparator";
 
+EnhancedTableHead.propTypes = {
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  numSelected: PropTypes.number.isRequired,
+  rowCount: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  headCells: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+  hideIdColumn: PropTypes.bool,
+  selectable: PropTypes.bool,
+  hasActions: PropTypes.bool,
+};
+
 function EnhancedTableHead(props) {
   const {
     onSelectAllClick,
@@ -95,6 +113,16 @@ function EnhancedTableHead(props) {
     </TableHead>
   );
 }
+
+EnhancedTableToolbar.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  selected: PropTypes.array.isRequired,
+  heading: PropTypes.string.isRequired,
+  filterText: PropTypes.string.isRequired,
+  onFilterTextChange: PropTypes.func.isRequired,
+  onClearSort: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+};
 
 function EnhancedTableToolbar(props) {
   const {

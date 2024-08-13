@@ -1,4 +1,5 @@
 import * as React from "react";
+import PropTypes from "prop-types";
 import {
   Card,
   CardActions,
@@ -28,4 +29,13 @@ export const RecommendationCard = ({ task, handleAssign }) => {
       </CardActions>
     </Card>
   );
+};
+
+RecommendationCard.propTypes = {
+  task: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+  }).isRequired, // Defines the shape of the task object and marks it as required
+  handleAssign: PropTypes.func.isRequired,
 };
