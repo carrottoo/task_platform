@@ -13,22 +13,18 @@ export function descendingComparator(a, b, orderBy) {
     return 0;
 }
 
-export function getComparator(orderBy) {
+export function getComparator(order, orderBy) {
     return (a, b) => {
+        const comp = descendingComparator(a, b, orderBy);
 
-        for (let i = 0; i < orderBy.length; i++) {
-            const comp = descendingComparator(a, b, orderBy[i].id);
-
-            if (comp !== 0) {
-                return orderBy[i].order === 'desc' ? comp : -comp;
-            }
+        if (comp !== 0) {
+            return order === 'desc' ? comp : -comp;
         }
-
-        return 0;
     };
 }
 
 export function stableSort(array, comparator) {
+    console.log('sorting')
 
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {

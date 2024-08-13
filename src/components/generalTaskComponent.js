@@ -146,25 +146,28 @@ export default function GeneralTaskComponent({headCells, cellContents, heading, 
 
     const navigate = useNavigate();
 
-    const handleDelete =  async (task) => {
-        const url = config.API_BASE_URL + "/tasks/";
-        const alternativeErrorMessage = 'Failed to delete the selected task.';
-        const supplementPermissionMessage = 'You cannot delete a task created by other users!'
-        const successMessage = 'The selected task has been deleted successfully!';
-
-        deleteObject(
-            token,
-            url,
-            task.id,
-            alternativeErrorMessage,
-            supplementPermissionMessage,
-            successMessage,
-            setSessionExpiredOpen,
-            setAlertMessage,
-            setAlertSeverity,
-            setShowAlert,
-            navigate
-        )
+    const handleDelete = async (selectedRows) => {
+    
+        for (let task of selectedRows) {
+            const url = config.API_BASE_URL + "/tasks/";
+            const alternativeErrorMessage = 'Failed to delete the selected task.';
+            const supplementPermissionMessage = 'You cannot delete a task created by other users!';
+            const successMessage = 'The selected task has been deleted successfully!';
+    
+            await deleteObject(
+                token,
+                url,
+                task.id, 
+                alternativeErrorMessage,
+                supplementPermissionMessage,
+                successMessage,
+                setSessionExpiredOpen,
+                setAlertMessage,
+                setAlertSeverity,
+                setShowAlert,
+                navigate
+            );
+        }
     };
 
     const handleUserBehaviorDelete = async (task) => {

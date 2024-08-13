@@ -31,56 +31,53 @@ function EnhancedTableHead(props) {
                                 'aria-label': 'select all rows',
                             }}
                         />
-                            </TableCell>
-                    )
-                }
+                    </TableCell>
+                )}
                 {headCells.map((headCell) => (
                     (!hideIdColumn || headCell.id !== 'displayId') && (
                     <TableCell
                         key={headCell.id}
-                        // align={headCell.numeric ? 'right' : 'left'}
-                        align="center" 
+                        align="center"
                         padding="normal"
-                        sortDirection={orderBy.find((item) => item.id === headCell.id)?.order || false}
+                        sortDirection={orderBy === headCell.id ? order : false}
                     >
                     <TableSortLabel
-                        active={!!orderBy.find((item) => item.id === headCell.id)}
-                        direction={orderBy.find((item) => item.id === headCell.id)?.order || 'asc'}
+                        active={orderBy === headCell.id}
+                        direction={orderBy === headCell.id ? order : 'asc'}
                         onClick={createSortHandler(headCell.id)}
                     >
                         <Typography sx={{ fontWeight: 'bold' }}>
                             {headCell.label}
                         </Typography>
-                        {orderBy.find((item) => item.id === headCell.id) && (
+                        {orderBy === headCell.id && (
                             <Box component="span" sx={visuallyHidden}>
-                                {orderBy.find((item) => item.id === headCell.id)?.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                             </Box>
                         )}
                     </TableSortLabel>
                 </TableCell>
                 )))}
                 {hasActions && (
-                    <TableCell sx={{fontWeight: 'bold'}} align="center" >
+                    <TableCell sx={{ fontWeight: 'bold' }} align="center">
                         Actions
                     </TableCell>
                 )}
             </TableRow>
         </TableHead>
-      );
-
+    );
 }
 
 function EnhancedTableToolbar(props) {
-    const { numSelected, heading, filterText, onFilterTextChange, onClearSort, handleDelete } = props;
-  
+    const { numSelected, selected, heading, filterText, onFilterTextChange, onClearSort, handleDelete } = props;
+
     return (
         <Toolbar
             sx={{
                 pl: { sm: 2 },
                 pr: { xs: 1, sm: 1 },
                 ...(numSelected > 0 && {
-                bgcolor: (theme) =>
-                alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+                    bgcolor: (theme) =>
+                        alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
                 }),
             }}
         >
@@ -103,11 +100,11 @@ function EnhancedTableToolbar(props) {
                     {heading}
                 </Typography>
             )}
-  
+
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
-                    <IconButton>
-                        <DeleteIcon onClick={handleDelete}/>
+                    <IconButton onClick={() => handleDelete(selected)}>
+                        <DeleteIcon />
                     </IconButton>
                 </Tooltip>
             ) : (
@@ -120,11 +117,6 @@ function EnhancedTableToolbar(props) {
                         size="small"
                         sx={{ marginRight: 2 }}
                     />
-                {/* <Tooltip title="Filter list">
-                <IconButton>
-                    <FilterListIcon />
-                </IconButton>
-                </Tooltip> */}
                     <Button 
                         onClick={onClearSort} 
                         variant="text" 
@@ -138,43 +130,39 @@ function EnhancedTableToolbar(props) {
             )}
         </Toolbar>
     );
-  }
-  
+}
+
 EnhancedTable.propTypes = {
     rows: PropTypes.array.isRequired,
     headCells: PropTypes.array.isRequired,
     cellContents: PropTypes.func.isRequired,
     heading: PropTypes.string.isRequired,
-    hideIdColumn: PropTypes.bool, // Add prop to control hiding the ID column
-    renderActions: PropTypes.func, // Make prop optional to render action buttons
-    handleDelete: PropTypes.func.isRequired, 
-    selectable: PropTypes.bool, // Add prop to control checkbox visibility
+    hideIdColumn: PropTypes.bool,
+    renderActions: PropTypes.func,
+    handleDelete: PropTypes.func.isRequired,
+    selectable: PropTypes.bool,
 };
-  
-export default function EnhancedTable({ rows, headCells, cellContents, 
-    heading, hideIdColumn, renderActions, selectable = true }) {
-    const [order, setOrder] = useState([]);
-    const [orderBy, setOrderBy] = useState([]);
+
+export default function EnhancedTable({ rows, headCells, cellContents, heading, hideIdColumn, renderActions, handleDelete, selectable = true }) {
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [filterText, setFilterText] = useState('');
-  
+
     const handleRequestSort = (event, property) => {
-        const existingIndex = orderBy.findIndex((item) => item.id === property);
-        if (existingIndex > -1) {
-            const newOrderBy = [...orderBy];
-            newOrderBy[existingIndex].order = newOrderBy[existingIndex].order === 'asc' ? 'desc' : 'asc';
-            setOrderBy(newOrderBy);
-        } else {
-            setOrderBy([...orderBy, { id: property, order: 'asc' }]);
-        }
+        const isAsc = orderBy === property && order === 'asc';
+        console.log(`Sorting by ${property} in ${isAsc ? 'descending' : 'ascending'} order.`);
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
     };
-  
+
     const handleClearSort = () => {
-        setOrderBy([]);
+        setOrderBy('');
+        setOrder('asc');
     };
-  
+
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
             const newSelected = rows.map((n) => n.id);
@@ -183,75 +171,87 @@ export default function EnhancedTable({ rows, headCells, cellContents,
         }
         setSelected([]);
     };
-  
-    const handleClick = (event, id) => {
-        if (event.target.closest('td:last-child')) { 
-            event.stopPropagation(); // Prevent the event from bubbling up to the row
-            return; // Do not select the row
+
+    const handleClick = (event, row) => {
+        if (event.target.closest('td:last-child')) {
+            event.stopPropagation();
+            return;
         }
-      
-        const selectedIndex = selected.indexOf(id);
+    
+        const selectedIndex = selected.indexOf(row.id);
         let newSelected = [];
-  
+    
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
+            newSelected = newSelected.concat(selected, row.id);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
             newSelected = newSelected.concat(selected.slice(0, -1));
         } else if (selectedIndex > 0) {
             newSelected = newSelected.concat(
-            selected.slice(0, selectedIndex),
-            selected.slice(selectedIndex + 1),
+                selected.slice(0, selectedIndex),
+                selected.slice(selectedIndex + 1),
             );
         }
-
+    
         setSelected(newSelected);
     };
-  
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-  
+
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-  
+
     const handleFilterTextChange = (event) => {
         setFilterText(event.target.value);
     };
-  
+
     const isSelected = (id) => selected.indexOf(id) !== -1;
-  
+
+    const handleRowDelete = async (selectedIds) => {
+        const selectedRows = rows.filter((row) => selectedIds.includes(row.id));
+
+        handleDelete(selectedRows)
+
+        // clear the selected state after deletion
+        setSelected([]);
+    };
+
+
     // Apply the filter to the rows
     const filteredRows = rows.filter((row) => {
         return Object.keys(row).some((key) =>
             String(row[key]).toLowerCase().includes(filterText.toLowerCase())
         );
     });
-  
+
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredRows.length) : 0;
-  
+
     const visibleRows = useMemo(
         () =>
             stableSort(filteredRows, getComparator(order, orderBy)).slice(
-            page * rowsPerPage,
-            page * rowsPerPage + rowsPerPage,
+                page * rowsPerPage,
+                page * rowsPerPage + rowsPerPage,
             ),
-            [order, orderBy, page, rowsPerPage, filteredRows],
+        [order, orderBy, page, rowsPerPage, filteredRows],
     );
-  
+
     const hasActions = typeof renderActions === 'function';
-  
+
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EnhancedTableToolbar
                     numSelected={selected.length}
+                    selected={selected}
                     heading={heading}
                     filterText={filterText}
                     onFilterTextChange={handleFilterTextChange}
+                    handleDelete={handleRowDelete}
                     onClearSort={handleClearSort}
                 />
                 <TableContainer>
@@ -272,41 +272,41 @@ export default function EnhancedTable({ rows, headCells, cellContents,
                             {visibleRows.map((row, index) => {
                                 const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
-  
-                            return (
-                                <TableRow
-                                    hover
-                                    onClick={selectable ? (event) => handleClick(event, row.id) : null}
-                                    role="checkbox"
-                                    aria-checked={isItemSelected}
-                                    tabIndex={-1}
-                                    key={row.id}
-                                    selected={isItemSelected}
-                                    sx={{ cursor: selectable ? 'pointer' : 'default' }}
-                                >
-                                {selectable && (
-                                    <TableCell padding="checkbox">
-                                        <Checkbox
-                                            color="primary"
-                                            checked={isItemSelected}
-                                            inputProps={{ 'aria-labelledby': labelId }}
-                                        />
-                                     </TableCell>
-                                )}
-                                {cellContents(row, labelId, hideIdColumn)}
-                                {hasActions && (
-                                    <TableCell padding="normal" align="center">
-                                        {renderActions(row)}
-                                    </TableCell>
-                                )}
+
+                                return (
+                                    <TableRow
+                                        hover
+                                        onClick={selectable ? (event) => handleClick(event, row) : null}
+                                        role="checkbox"
+                                        aria-checked={isItemSelected}
+                                        tabIndex={-1}
+                                        key={row.id}
+                                        selected={isItemSelected}
+                                        sx={{ cursor: selectable ? 'pointer' : 'default' }}
+                                    >
+                                        {selectable && (
+                                            <TableCell padding="checkbox">
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemSelected}
+                                                    inputProps={{ 'aria-labelledby': labelId }}
+                                                />
+                                            </TableCell>
+                                        )}
+                                        {cellContents(row, labelId, hideIdColumn)}
+                                        {hasActions && (
+                                            <TableCell padding="normal" align="center">
+                                                {renderActions(row)}
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
+                                );
+                            })}
+                            {emptyRows > 0 && (
+                                <TableRow style={{ height: 53 * emptyRows }}>
+                                    <TableCell colSpan={headCells.length + (selectable ? 1 : 0) + (hasActions ? 1 : 0)} />
                                 </TableRow>
-                            );
-                        })}
-                        {emptyRows > 0 && (
-                            <TableRow style={{ height: 53 * emptyRows }}>
-                                <TableCell colSpan={headCells.length + (selectable ? 1 : 0) + (hasActions ? 1 : 0)} />
-                            </TableRow>
-                        )}
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
