@@ -16,6 +16,9 @@ Homepage (staging)
 
 ![Homepage](./media/homepage_staging.png)
 
+WebGL background created with THREE
+
+https://github.com/user-attachments/assets/d1c417bd-42f4-47f5-93dd-421bc2c88ba2
 
 #### Demos for users whose chosen role is 'employer'
 
@@ -83,7 +86,7 @@ npm start
 ```
 or if you want to use the backend service in dev mode
 ```
-npm start-dev
+npm run start-dev
 ```
 ### To run in production
 
