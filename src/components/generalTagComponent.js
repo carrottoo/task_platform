@@ -89,6 +89,7 @@ export default function GeneralTagComponent({
 
             correspondingProperties.push({
               id: result.ok.id, // Extract id
+              userPropertyId: userProperty.id,
               name: result.ok.name, // Extract name
             });
           } catch (error) {
@@ -130,6 +131,31 @@ export default function GeneralTagComponent({
       navigate,
     );
   };
+ 
+  const handleDeleteUserPreference = async (property) =>{
+    const url = `${config.API_BASE_URL}/user_properties/`;
+
+    const alternativeErrorMessage =
+      "Failed to delete the selected user preference linked property tag.";
+    const supplementPermissionMessage =
+      "You cannot delete a property tag linked by other users!";
+    const successMessage =
+      "The selected property tag has been deleted successfully!";
+
+    deleteObject(
+      token,
+      url,
+      property.userPropertyId,
+      alternativeErrorMessage,
+      supplementPermissionMessage,
+      successMessage,
+      setSessionExpiredOpen,
+      setAlertMessage,
+      setAlertSeverity,
+      setShowAlert,
+      navigate,
+    );
+  }
 
   const handleLikeProperty = async (property) => {
     const url = `${config.API_BASE_URL}/user_properties/`;
@@ -287,7 +313,7 @@ export default function GeneralTagComponent({
           ) : (
             <ChipDisplay
               tags={properties}
-              onDeleteTag={handleDeleteProperty}
+              onDeleteTag={handleDeleteUserPreference}
               isEditing={isEditing}
             />
           )}
