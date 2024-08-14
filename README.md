@@ -18,7 +18,7 @@ Homepage (staging)
 
 WebGL background created with THREE
 
-https://github.com/user-attachments/assets/d1c417bd-42f4-47f5-93dd-421bc2c88ba2
+https://github.com/user-attachments/assets/42a625d9-0005-4447-903f-bb5e160d9684
 
 #### Demos for users whose chosen role is 'employer'
 
@@ -28,7 +28,7 @@ https://github.com/user-attachments/assets/4eff8729-1055-41c8-b8c6-790d46a91b6c
 
 Explore the dashboard and create a task property tag
 
-https://github.com/user-attachments/assets/002aff0d-2efc-48ae-804a-98ebc126fab0
+https://github.com/user-attachments/assets/845a9e15-0d07-4c05-af0a-c249e535aa50
 
 Create a task
 
